@@ -1,0 +1,3 @@
+[submodule "pokeemerald-binds/pokeemerald-expansion"]
+	path = pokeemerald-binds/pokeemerald-expansion
+	url = https://github.com/rh-hideout/pokeemerald-expansion
