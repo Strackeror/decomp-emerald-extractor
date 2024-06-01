@@ -36,6 +36,16 @@ pub struct PokemonAbilities {
 
 #[allow(non_snake_case)]
 #[serde_with::skip_serializing_none]
+#[derive(Serialize, Debug, Clone, Default)]
+    pub struct PokemonEvolution {
+    pub target: String,
+    pub level: Option<u32>,
+    pub condition: Option<String>,
+    pub item: Option<String>,
+}
+
+#[allow(non_snake_case)]
+#[serde_with::skip_serializing_none]
 #[derive(Serialize, Debug)]
 pub struct Pokemon {
     pub num: u32,
@@ -47,15 +57,10 @@ pub struct Pokemon {
     pub abilities: PokemonAbilities,
     pub weightkg: f32,
 
-    pub prevo: Option<String>,
-    pub evoLevel: Option<u16>,
-    pub evoType: Option<String>,
-    pub evoItem: Option<String>,
-    pub evoCondition: Option<String>,
-    pub evos: Option<Vec<String>>,
     pub eggGroups: Vec<String>,
 
-    pub baseSpecies: Option<String>,
+    pub evos: Option<Vec<PokemonEvolution>>,
+
     pub forme: Option<String>,
     pub formes: Option<Vec<String>>,
     pub requiredItems: Option<Vec<String>>,
@@ -185,6 +190,6 @@ pub fn export(path: &Path, db: &Database) -> Result<()> {
     serde_json::to_writer_pretty(File::create(path.join("abilities.json"))?, &db.abilities)?;
     serde_json::to_writer_pretty(File::create(path.join("learnsets.json"))?, &db.learnsets)?;
     serde_json::to_writer_pretty(File::create(path.join("moves.json"))?, &db.moves)?;
-    serde_json::to_writer_pretty(File::create(path.join("pokemons.json"))?, &db.pokemons)?;
+    serde_json::to_writer_pretty(File::create(path.join("pokedex.json"))?, &db.pokemons)?;
     Ok(())
 }

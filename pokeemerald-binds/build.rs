@@ -24,8 +24,6 @@ fn main() {
         ])
         .header("wrapper.h")
         .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
-        // .allowlist_item("gSpeciesInfo")
-        // .allowlist_item("SPECIES_EGG")
         .generate()
         .unwrap();
 

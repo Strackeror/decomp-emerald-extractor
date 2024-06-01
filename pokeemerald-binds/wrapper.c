@@ -1,6 +1,5 @@
 #include "wrapper.h"
 
-
 #define _(a) a
 #define INCBIN_U32(a) {}
 #define INCBIN_U16(a) {}
@@ -65,3 +64,54 @@ const union AnimCmd sAnim_GeneralFrame0[] = { };
 
 #include "data/moves_info.h"
 #include "data/abilities.h"
+
+///
+/// Items
+///
+
+#include "item_use.h"
+#include "constants/items.h"
+#include "constants/item_effects.h"
+#include "constants/hold_effects.h"
+
+#include "data/pokemon/item_effects.h"
+#include "data/items.h"
+
+
+void ItemUseOutOfBattle_Mail(u8){};
+void ItemUseOutOfBattle_Bike(u8){};
+void ItemUseOutOfBattle_Rod(u8){};
+void ItemUseOutOfBattle_Itemfinder(u8){};
+void ItemUseOutOfBattle_PokeblockCase(u8){};
+void ItemUseOutOfBattle_CoinCase(u8){};
+void ItemUseOutOfBattle_PokemonBoxLink(u8){};
+void ItemUseOutOfBattle_PowderJar(u8){};
+void ItemUseOutOfBattle_SSTicket(u8){};
+void ItemUseOutOfBattle_WailmerPail(u8){};
+void ItemUseOutOfBattle_Medicine(u8){};
+void ItemUseOutOfBattle_AbilityCapsule(u8){};
+void ItemUseOutOfBattle_AbilityPatch(u8){};
+void ItemUseOutOfBattle_Mint(u8){};
+void ItemUseOutOfBattle_ResetEVs(u8){};
+void ItemUseOutOfBattle_ReduceEV(u8){};
+void ItemUseOutOfBattle_SacredAsh(u8){};
+void ItemUseOutOfBattle_PPRecovery(u8){};
+void ItemUseOutOfBattle_PPUp(u8){};
+void ItemUseOutOfBattle_RareCandy(u8){};
+void ItemUseOutOfBattle_DynamaxCandy(u8){};
+void ItemUseOutOfBattle_TMHM(u8){};
+void ItemUseOutOfBattle_Repel(u8){};
+void ItemUseOutOfBattle_Lure(u8){};
+void ItemUseOutOfBattle_EscapeRope(u8){};
+void ItemUseOutOfBattle_BlackWhiteFlute(u8){};
+void ItemUseOutOfBattle_EvolutionStone(u8){};
+void ItemUseOutOfBattle_Berry(u8){};
+void ItemUseOutOfBattle_EnigmaBerry(u8){};
+void ItemUseOutOfBattle_FormChange(u8){};
+void ItemUseOutOfBattle_FormChange_ConsumedOnUse(u8){};
+void ItemUseOutOfBattle_RotomCatalog(u8){};
+void ItemUseOutOfBattle_ZygardeCube(u8){};
+void ItemUseOutOfBattle_Fusion(u8){};
+void ItemUseOutOfBattle_Honey(u8){};
+void ItemUseOutOfBattle_CannotUse(u8){};
+void ItemUseOutOfBattle_ExpShare(u8){};

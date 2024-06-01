@@ -1,4 +1,3 @@
-use std::collections::BTreeMap;
 use std::ffi::CStr;
 use std::path::PathBuf;
 
@@ -7,16 +6,26 @@ use anyhow::Context;
 use anyhow::Result;
 use indexmap::IndexMap;
 use json::Database;
+use json::Learnset;
+use json::LearnsetEntry;
+use json::Move;
 use json::Pokemon;
+use json::PokemonEvolution;
 use json::Stats;
-use pokeemerald_binds::gAbilitiesInfo;
-use pokeemerald_binds::gSpeciesInfo;
 use pokeemerald_binds::Ability;
-use pokeemerald_binds::SpeciesInfo;
-use pokeemerald_binds::ABILITIES_COUNT_GEN9;
-use pokeemerald_binds::SPECIES_EGG;
+use rom::get_info;
+use rom::get_species_formes;
+use rom::get_species_levelup_moves;
+use rom::get_species_teachable_moves;
+use rom::EvoMethod;
+use rom::Evolution;
+use rom::MoveCategory;
+use rom::RomInfo;
+use rom::SpeciesInfo;
+use rom::Type;
 
 mod json;
+mod rom;
 
 trait ToStringC {
     fn to_string_c(&self) -> Result<String>;
@@ -24,7 +33,7 @@ trait ToStringC {
 
 impl ToStringC for *const u8 {
     fn to_string_c(&self) -> Result<String> {
-        if *self == std::ptr::null() {
+        if (*self).is_null() {
             bail!("Tried to convert nullptr to string")
         }
         unsafe { Ok(CStr::from_ptr(*self as *const i8).to_str()?.to_string()) }
@@ -37,37 +46,20 @@ impl<const S: usize> ToStringC for [u8; S] {
     }
 }
 
-fn get_type(poke_type: u8) -> Result<String> {
-    use pokeemerald_binds::{
-        TYPE_BUG, TYPE_DARK, TYPE_DRAGON, TYPE_ELECTRIC, TYPE_FAIRY, TYPE_FIGHTING, TYPE_FIRE,
-        TYPE_FLYING, TYPE_GHOST, TYPE_GRASS, TYPE_GROUND, TYPE_ICE, TYPE_MYSTERY, TYPE_NONE,
-        TYPE_NORMAL, TYPE_POISON, TYPE_PSYCHIC, TYPE_ROCK, TYPE_STEEL, TYPE_WATER,
-    };
-    let str = match poke_type as u32 {
-        TYPE_NONE => "None",
-        TYPE_NORMAL => "Normal",
-        TYPE_FIGHTING => "Fighting",
-        TYPE_FLYING => "Flying",
-        TYPE_POISON => "Poison",
-        TYPE_GROUND => "Ground",
-        TYPE_ROCK => "Rock",
-        TYPE_BUG => "Bug",
-        TYPE_GHOST => "Ghost",
-        TYPE_STEEL => "Steel",
-        TYPE_MYSTERY => "Mystery",
-        TYPE_FIRE => "Fire",
-        TYPE_WATER => "Water",
-        TYPE_GRASS => "Grass",
-        TYPE_ELECTRIC => "Electric",
-        TYPE_PSYCHIC => "Psychic",
-        TYPE_ICE => "Ice",
-        TYPE_DRAGON => "Dragon",
-        TYPE_DARK => "Dark",
-        TYPE_FAIRY => "Fairy",
-        _ => bail!("Invalid type: {poke_type}"),
-    };
-    Ok(str.to_string())
+unsafe fn guarded_array_to_slice<'a, T, F: Fn(*const T) -> bool>(
+    ptr: *const T,
+    f_is_end: F,
+) -> &'a [T] {
+    let mut count = 0;
+    let mut counter_ptr = ptr;
+
+    while !f_is_end(counter_ptr) {
+        count += 1;
+        unsafe { counter_ptr = counter_ptr.add(1) };
+    }
+    unsafe { std::slice::from_raw_parts(ptr, count) }
 }
+
 fn idify(str: &str) -> String {
     str.to_ascii_lowercase()
         .chars()
@@ -75,27 +67,17 @@ fn idify(str: &str) -> String {
         .collect()
 }
 
-fn get_species_info() -> Vec<SpeciesInfo> {
-    const SPECIES_COUNT: usize = SPECIES_EGG as usize;
-
-    let slice = unsafe { std::slice::from_raw_parts(gSpeciesInfo.as_ptr(), SPECIES_COUNT) };
-    Vec::from(slice)
+fn build_ability(index: u32, ability: &rom::Ability) -> Result<json::Ability> {
+    Ok(json::Ability {
+        num: index,
+        name: ability.name.to_string_c()?,
+        desc: ability.description.to_string_c()?,
+        shortDesc: ability.description.to_string_c()?,
+    })
 }
-
-fn get_types(species: &SpeciesInfo) -> Result<Vec<String>> {
-    if species.types[0] == species.types[1] {
-        Ok(vec![get_type(species.types[0])?])
-    } else {
-        Ok(vec![
-            get_type(species.types[0])?,
-            get_type(species.types[1])?,
-        ])
-    }
-}
-
-fn get_abilities(
+fn build_poke_abilities(
     species: &SpeciesInfo,
-    abilities: &[json::Ability],
+    abilities: &[Ability],
 ) -> Result<json::PokemonAbilities> {
     let mut pk_abilities = json::PokemonAbilities {
         zero: Some(
@@ -103,7 +85,7 @@ fn get_abilities(
                 .get(species.abilities[0] as usize)
                 .context("getting ability in list")?
                 .name
-                .clone(),
+                .to_string_c()?,
         ),
         ..Default::default()
     };
@@ -114,7 +96,7 @@ fn get_abilities(
                 .get(species.abilities[1] as usize)
                 .context("getting ability in list")?
                 .name
-                .clone(),
+                .to_string_c()?,
         );
     }
     if species.abilities[2] != species.abilities[0] && species.abilities[2] > 0 {
@@ -123,21 +105,106 @@ fn get_abilities(
                 .get(species.abilities[2] as usize)
                 .context("getting ability in list")?
                 .name
-                .clone(),
+                .to_string_c()?,
         );
     }
 
     Ok(pk_abilities)
 }
 
-fn poke_from_species_info(
-    species: &SpeciesInfo,
-    abilities: &[json::Ability],
-) -> Result<json::Pokemon> {
+fn get_override_name(index: usize, info: RomInfo) -> Option<String> {
+    let species = &info.species[index];
+
+    let name = species.speciesName.to_string_c().ok()?;
+    let formes = get_species_formes(species)?;
+    let forme_index = formes.iter().position(|fid| *fid as usize == index)?;
+    Some(info.forme_list.0.get(&name)?.get(forme_index)?.clone())
+}
+
+fn get_species_name(index: usize, info: RomInfo) -> Result<String> {
+    if let Some(n) = get_override_name(index, info) {
+        return Ok(n);
+    }
+
+    let species = &info.species[index];
+
+    let name = species.speciesName.to_string_c()?;
+    match get_species_formes(species) {
+        None => Ok(name),
+        Some(_) => Ok(format!("{name}-{index}-UNKNOWN")),
+    }
+}
+
+fn poke_is_valid(index: usize, info: RomInfo) -> bool {
+    let species = &info.species[index];
+
+    if species.natDexNum == 0 {
+        return false;
+    }
+    match get_species_formes(species) {
+        None => true,
+        Some(_) => get_override_name(index, info).is_some(),
+    }
+}
+
+fn build_evos(species: &SpeciesInfo, info: RomInfo) -> Result<Option<Vec<PokemonEvolution>>> {
+    fn build_evo(evolution: &Evolution, info: RomInfo) -> Result<PokemonEvolution> {
+        let method = EvoMethod::from_int(evolution.method).unwrap_or(EvoMethod::None);
+        let target_index = evolution.targetSpecies as usize;
+        Ok(PokemonEvolution {
+            target: get_species_name(target_index, info)?,
+            level: match method {
+                m if m.name().starts_with("Level") => Some(evolution.param as u32),
+                _ => None,
+            },
+            item: match method {
+                m if m.name().starts_with("Item") => {
+                    Some(info.items[evolution.param as usize].name.to_string_c()?)
+                }
+                _ => None,
+            },
+            condition: match method {
+                EvoMethod::ItemDay => Some("Used during the day"),
+                _ => None,
+            }
+            .map(str::to_string),
+        })
+    }
+
+    let evos = match rom::get_species_evos(species) {
+        None => return Ok(None),
+        Some(evos) => evos,
+    };
+
+    Ok(Some(
+        evos.iter()
+            .filter(|i| poke_is_valid(i.targetSpecies as usize, info))
+            .map(|evo| build_evo(evo, info))
+            .collect::<Result<_>>()?,
+    ))
+}
+
+fn build_formes(species: &SpeciesInfo, info: RomInfo) -> Result<Option<Vec<String>>> {
+    let formes = match rom::get_species_formes(species) {
+        None => return Ok(None),
+        Some(f) => f,
+    };
+
+    Ok(Some(
+        formes
+            .iter()
+            .filter(|i| poke_is_valid(**i as usize, info))
+            .map(|i| get_species_name(*i as usize, info))
+            .collect::<Result<_>>()?,
+    ))
+}
+
+fn build_poke(species_index: usize, info: RomInfo) -> Result<json::Pokemon> {
+    let species = &info.species[species_index];
     Ok(Pokemon {
         num: species.natDexNum as _,
-        name: species.speciesName.to_string_c()?,
-        types: get_types(species)?,
+        name: get_species_name(species_index, info)?,
+        types: rom::get_types(species)?,
         gender: None,
         genderRatio: None,
         baseStats: Stats {
@@ -149,71 +216,128 @@ fn poke_from_species_info(
             spd: species.baseSpDefense,
         },
 
-        abilities: get_abilities(species, abilities)?,
-        weightkg: species.weight as f32,
-        prevo: None,
-        evoLevel: None,
-        evoType: None,
-        evoItem: None,
-        evoCondition: None,
-        evos: None,
+        abilities: build_poke_abilities(species, info.abilities)?,
+        weightkg: species.weight as f32 / 10.0,
+        evos: build_evos(species, info)?,
         eggGroups: vec![],
-        baseSpecies: None,
         forme: None,
-        formes: None,
+        formes: build_formes(species, info)?,
         requiredItems: None,
         unusable: None,
     })
 }
 
-fn get_abilities_info() -> Vec<Ability> {
-    const COUNT: usize = ABILITIES_COUNT_GEN9 as usize;
-    let slice = unsafe { std::slice::from_raw_parts(gAbilitiesInfo.as_ptr(), COUNT) };
-    Vec::from(slice)
-}
+fn build_move(move_index: usize, info: RomInfo) -> Result<Move> {
+    let move_info = &info.moves[move_index];
 
-fn ability_from_ability_info(index: u32, ability: &Ability) -> Result<json::Ability> {
-    Ok(json::Ability {
-        num: index,
-        name: ability.name.to_string_c()?,
-        desc: ability.description.to_string_c()?,
-        shortDesc: ability.description.to_string_c()?,
+    let category = MoveCategory::from_int(move_info.category()).context("Getting move category")?;
+    let r#type = Type::from_int(move_info.type_() as u8).context("Getting move type")?;
+
+    Ok(Move {
+        name: move_info.name.to_string_c()?,
+        num: move_index as u32,
+        pp: move_info.pp as u32,
+        basePower: move_info.power() as _,
+        accuracy: json::MoveAccuracy::Number(move_info.accuracy() as _),
+        category: category.name().to_string(),
+        priority: move_info.priority(),
+        critRatio: move_info.criticalHitStage() as i32,
+        r#type: r#type.name().to_string(),
+        target: String::new(),
+        desc: move_info.description.to_string_c()?,
+        shortDesc: move_info.description.to_string_c()?,
+        flags: Default::default(),
+        willCrit: None,
+        drain: None,
+        recoil: None,
+        selfEffects: None,
+        multihit: None,
+        zMove: None,
+        secondaries: None,
     })
 }
 
-fn main() {
-    let abilities = get_abilities_info()
-        .into_iter()
+fn build_learnset(species_index: usize, info: RomInfo) -> Result<Learnset> {
+    let species = &info.species[species_index];
+
+    let mut moves = Vec::new();
+    let level_up_moves: Vec<LearnsetEntry> = get_species_levelup_moves(species)
+        .unwrap_or(&[])
+        .iter()
+        .map(|lvlup_move| {
+            Ok(LearnsetEntry {
+                how: json::Method::lvl,
+                level: Some(lvlup_move.level as _),
+                move_: idify(&info.moves[lvlup_move.move_ as usize].name.to_string_c()?),
+            })
+        })
+        .collect::<Result<_>>()?;
+
+    let teachable_moves: Vec<LearnsetEntry> = get_species_teachable_moves(species)
+        .unwrap_or(&[])
+        .iter()
+        .map(|move_| {
+            Ok(LearnsetEntry {
+                how: json::Method::tm,
+                level: None,
+                move_: idify(&info.moves[*move_ as usize].name.to_string_c()?),
+            })
+        })
+        .collect::<Result<_>>()?;
+
+    moves.extend(level_up_moves);
+    moves.extend(teachable_moves);
+    Ok(Learnset(moves))
+}
+
+fn main() -> Result<()> {
+    let info = get_info();
+
+    let abilities: IndexMap<String, json::Ability> = info
+        .abilities
+        .iter()
         .zip(0..)
         .map(|(ability, index)| {
-            let json_ability = ability_from_ability_info(index, &ability)?;
-            Ok(json_ability)
+            let ability = build_ability(index, ability)?;
+            Ok((idify(&ability.name), ability))
         })
-        .collect::<Result<Vec<_>>>()
-        .unwrap();
+        .collect::<Result<_>>()?;
 
-    let pokemons = get_species_info()
-        .into_iter()
-        .map(|species_info| poke_from_species_info(&species_info, &abilities))
-        .collect::<Result<Vec<_>>>()
-        .unwrap();
-
-    let abilities: IndexMap<String, json::Ability> = abilities
-        .into_iter()
-        .map(|ability| (idify(&ability.name), ability))
-        .collect();
-    let pokemons: IndexMap<String, Pokemon> = pokemons
+    let mut pokemons: IndexMap<String, Pokemon> = (0..info.species.len())
+        .filter(|i| poke_is_valid(*i, info))
+        .map(|i| build_poke(i, info))
+        .collect::<Result<Vec<_>>>()?
         .into_iter()
         .map(|pokemon| (idify(&pokemon.name), pokemon))
         .collect();
+    pokemons.sort_by_cached_key(|_, v| v.num);
+
+    let moves: IndexMap<String, Move> = (1..info.moves.len())
+        .map(|i| {
+            let move_ = build_move(i, info)?;
+            Ok((idify(&move_.name), move_))
+        })
+        .collect::<Result<_>>()?;
+
+    let learnsets: IndexMap<String, Learnset> = info
+        .species
+        .iter()
+        .zip(0..)
+        .skip(1)
+        .map(|(_, index)| {
+            let learnset = build_learnset(index, info)?;
+            Ok((idify(&get_species_name(index, info)?), learnset))
+        })
+        .collect::<Result<_>>()?;
 
     json::export(
-        &PathBuf::from("target"),
+        &PathBuf::from("output"),
         &Database {
             abilities,
             pokemons,
-            ..Default::default()
+            moves,
+            learnsets,
         },
-    )
-    .unwrap();
+    )?;
+    Ok(())
 }

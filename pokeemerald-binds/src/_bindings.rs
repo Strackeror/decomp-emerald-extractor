@@ -8624,6 +8624,19 @@ pub const SPINDA_SPOT_WIDTH: u32 = 16;
 pub const SPINDA_SPOT_HEIGHT: u32 = 16;
 pub const NUM_UNOWN_FORMS: u32 = 28;
 pub const LINK_B_RECORDS_COUNT: u32 = 5;
+pub const POCKET_NONE: u32 = 0;
+pub const POCKET_ITEMS: u32 = 1;
+pub const POCKET_POKE_BALLS: u32 = 2;
+pub const POCKET_TM_HM: u32 = 3;
+pub const POCKET_BERRIES: u32 = 4;
+pub const POCKET_KEY_ITEMS: u32 = 5;
+pub const ITEMS_POCKET: u32 = 0;
+pub const BALLS_POCKET: u32 = 1;
+pub const TMHM_POCKET: u32 = 2;
+pub const BERRIES_POCKET: u32 = 3;
+pub const KEYITEMS_POCKET: u32 = 4;
+pub const POCKETS_COUNT: u32 = 5;
+pub const REPEL_LURE_MASK: u32 = 32768;
 pub const ABILITY_NONE: u32 = 0;
 pub const ABILITY_STENCH: u32 = 1;
 pub const ABILITY_DRIZZLE: u32 = 2;
@@ -8943,6 +8956,924 @@ pub const ABILITY_TERAFORM_ZERO: u32 = 309;
 pub const ABILITY_POISON_PUPPETEER: u32 = 310;
 pub const ABILITIES_COUNT_GEN9: u32 = 311;
 pub const ABILITIES_COUNT: u32 = 311;
+pub const MOVE_NONE: u32 = 0;
+pub const MOVE_POUND: u32 = 1;
+pub const MOVE_KARATE_CHOP: u32 = 2;
+pub const MOVE_DOUBLE_SLAP: u32 = 3;
+pub const MOVE_DOUBLESLAP: u32 = 3;
+pub const MOVE_COMET_PUNCH: u32 = 4;
+pub const MOVE_MEGA_PUNCH: u32 = 5;
+pub const MOVE_PAY_DAY: u32 = 6;
+pub const MOVE_FIRE_PUNCH: u32 = 7;
+pub const MOVE_ICE_PUNCH: u32 = 8;
+pub const MOVE_THUNDER_PUNCH: u32 = 9;
+pub const MOVE_THUNDERPUNCH: u32 = 9;
+pub const MOVE_SCRATCH: u32 = 10;
+pub const MOVE_VISE_GRIP: u32 = 11;
+pub const MOVE_VICEGRIP: u32 = 11;
+pub const MOVE_VICE_GRIP: u32 = 11;
+pub const MOVE_GUILLOTINE: u32 = 12;
+pub const MOVE_RAZOR_WIND: u32 = 13;
+pub const MOVE_SWORDS_DANCE: u32 = 14;
+pub const MOVE_CUT: u32 = 15;
+pub const MOVE_GUST: u32 = 16;
+pub const MOVE_WING_ATTACK: u32 = 17;
+pub const MOVE_WHIRLWIND: u32 = 18;
+pub const MOVE_FLY: u32 = 19;
+pub const MOVE_BIND: u32 = 20;
+pub const MOVE_SLAM: u32 = 21;
+pub const MOVE_VINE_WHIP: u32 = 22;
+pub const MOVE_STOMP: u32 = 23;
+pub const MOVE_DOUBLE_KICK: u32 = 24;
+pub const MOVE_MEGA_KICK: u32 = 25;
+pub const MOVE_JUMP_KICK: u32 = 26;
+pub const MOVE_ROLLING_KICK: u32 = 27;
+pub const MOVE_SAND_ATTACK: u32 = 28;
+pub const MOVE_HEADBUTT: u32 = 29;
+pub const MOVE_HORN_ATTACK: u32 = 30;
+pub const MOVE_FURY_ATTACK: u32 = 31;
+pub const MOVE_HORN_DRILL: u32 = 32;
+pub const MOVE_TACKLE: u32 = 33;
+pub const MOVE_BODY_SLAM: u32 = 34;
+pub const MOVE_WRAP: u32 = 35;
+pub const MOVE_TAKE_DOWN: u32 = 36;
+pub const MOVE_THRASH: u32 = 37;
+pub const MOVE_DOUBLE_EDGE: u32 = 38;
+pub const MOVE_TAIL_WHIP: u32 = 39;
+pub const MOVE_POISON_STING: u32 = 40;
+pub const MOVE_TWINEEDLE: u32 = 41;
+pub const MOVE_PIN_MISSILE: u32 = 42;
+pub const MOVE_LEER: u32 = 43;
+pub const MOVE_BITE: u32 = 44;
+pub const MOVE_GROWL: u32 = 45;
+pub const MOVE_ROAR: u32 = 46;
+pub const MOVE_SING: u32 = 47;
+pub const MOVE_SUPERSONIC: u32 = 48;
+pub const MOVE_SONIC_BOOM: u32 = 49;
+pub const MOVE_SONICBOOM: u32 = 49;
+pub const MOVE_DISABLE: u32 = 50;
+pub const MOVE_ACID: u32 = 51;
+pub const MOVE_EMBER: u32 = 52;
+pub const MOVE_FLAMETHROWER: u32 = 53;
+pub const MOVE_MIST: u32 = 54;
+pub const MOVE_WATER_GUN: u32 = 55;
+pub const MOVE_HYDRO_PUMP: u32 = 56;
+pub const MOVE_SURF: u32 = 57;
+pub const MOVE_ICE_BEAM: u32 = 58;
+pub const MOVE_BLIZZARD: u32 = 59;
+pub const MOVE_PSYBEAM: u32 = 60;
+pub const MOVE_BUBBLE_BEAM: u32 = 61;
+pub const MOVE_BUBBLEBEAM: u32 = 61;
+pub const MOVE_AURORA_BEAM: u32 = 62;
+pub const MOVE_HYPER_BEAM: u32 = 63;
+pub const MOVE_PECK: u32 = 64;
+pub const MOVE_DRILL_PECK: u32 = 65;
+pub const MOVE_SUBMISSION: u32 = 66;
+pub const MOVE_LOW_KICK: u32 = 67;
+pub const MOVE_COUNTER: u32 = 68;
+pub const MOVE_SEISMIC_TOSS: u32 = 69;
+pub const MOVE_STRENGTH: u32 = 70;
+pub const MOVE_ABSORB: u32 = 71;
+pub const MOVE_MEGA_DRAIN: u32 = 72;
+pub const MOVE_LEECH_SEED: u32 = 73;
+pub const MOVE_GROWTH: u32 = 74;
+pub const MOVE_RAZOR_LEAF: u32 = 75;
+pub const MOVE_SOLAR_BEAM: u32 = 76;
+pub const MOVE_SOLARBEAM: u32 = 76;
+pub const MOVE_POISON_POWDER: u32 = 77;
+pub const MOVE_POISONPOWDER: u32 = 77;
+pub const MOVE_STUN_SPORE: u32 = 78;
+pub const MOVE_SLEEP_POWDER: u32 = 79;
+pub const MOVE_PETAL_DANCE: u32 = 80;
+pub const MOVE_STRING_SHOT: u32 = 81;
+pub const MOVE_DRAGON_RAGE: u32 = 82;
+pub const MOVE_FIRE_SPIN: u32 = 83;
+pub const MOVE_THUNDER_SHOCK: u32 = 84;
+pub const MOVE_THUNDERSHOCK: u32 = 84;
+pub const MOVE_THUNDERBOLT: u32 = 85;
+pub const MOVE_THUNDER_WAVE: u32 = 86;
+pub const MOVE_THUNDER: u32 = 87;
+pub const MOVE_ROCK_THROW: u32 = 88;
+pub const MOVE_EARTHQUAKE: u32 = 89;
+pub const MOVE_FISSURE: u32 = 90;
+pub const MOVE_DIG: u32 = 91;
+pub const MOVE_TOXIC: u32 = 92;
+pub const MOVE_CONFUSION: u32 = 93;
+pub const MOVE_PSYCHIC: u32 = 94;
+pub const MOVE_HYPNOSIS: u32 = 95;
+pub const MOVE_MEDITATE: u32 = 96;
+pub const MOVE_AGILITY: u32 = 97;
+pub const MOVE_QUICK_ATTACK: u32 = 98;
+pub const MOVE_RAGE: u32 = 99;
+pub const MOVE_TELEPORT: u32 = 100;
+pub const MOVE_NIGHT_SHADE: u32 = 101;
+pub const MOVE_MIMIC: u32 = 102;
+pub const MOVE_SCREECH: u32 = 103;
+pub const MOVE_DOUBLE_TEAM: u32 = 104;
+pub const MOVE_RECOVER: u32 = 105;
+pub const MOVE_HARDEN: u32 = 106;
+pub const MOVE_MINIMIZE: u32 = 107;
+pub const MOVE_SMOKESCREEN: u32 = 108;
+pub const MOVE_CONFUSE_RAY: u32 = 109;
+pub const MOVE_WITHDRAW: u32 = 110;
+pub const MOVE_DEFENSE_CURL: u32 = 111;
+pub const MOVE_BARRIER: u32 = 112;
+pub const MOVE_LIGHT_SCREEN: u32 = 113;
+pub const MOVE_HAZE: u32 = 114;
+pub const MOVE_REFLECT: u32 = 115;
+pub const MOVE_FOCUS_ENERGY: u32 = 116;
+pub const MOVE_BIDE: u32 = 117;
+pub const MOVE_METRONOME: u32 = 118;
+pub const MOVE_MIRROR_MOVE: u32 = 119;
+pub const MOVE_SELF_DESTRUCT: u32 = 120;
+pub const MOVE_SELFDESTRUCT: u32 = 120;
+pub const MOVE_EGG_BOMB: u32 = 121;
+pub const MOVE_LICK: u32 = 122;
+pub const MOVE_SMOG: u32 = 123;
+pub const MOVE_SLUDGE: u32 = 124;
+pub const MOVE_BONE_CLUB: u32 = 125;
+pub const MOVE_FIRE_BLAST: u32 = 126;
+pub const MOVE_WATERFALL: u32 = 127;
+pub const MOVE_CLAMP: u32 = 128;
+pub const MOVE_SWIFT: u32 = 129;
+pub const MOVE_SKULL_BASH: u32 = 130;
+pub const MOVE_SPIKE_CANNON: u32 = 131;
+pub const MOVE_CONSTRICT: u32 = 132;
+pub const MOVE_AMNESIA: u32 = 133;
+pub const MOVE_KINESIS: u32 = 134;
+pub const MOVE_SOFT_BOILED: u32 = 135;
+pub const MOVE_SOFTBOILED: u32 = 135;
+pub const MOVE_HIGH_JUMP_KICK: u32 = 136;
+pub const MOVE_HI_JUMP_KICK: u32 = 136;
+pub const MOVE_GLARE: u32 = 137;
+pub const MOVE_DREAM_EATER: u32 = 138;
+pub const MOVE_POISON_GAS: u32 = 139;
+pub const MOVE_BARRAGE: u32 = 140;
+pub const MOVE_LEECH_LIFE: u32 = 141;
+pub const MOVE_LOVELY_KISS: u32 = 142;
+pub const MOVE_SKY_ATTACK: u32 = 143;
+pub const MOVE_TRANSFORM: u32 = 144;
+pub const MOVE_BUBBLE: u32 = 145;
+pub const MOVE_DIZZY_PUNCH: u32 = 146;
+pub const MOVE_SPORE: u32 = 147;
+pub const MOVE_FLASH: u32 = 148;
+pub const MOVE_PSYWAVE: u32 = 149;
+pub const MOVE_SPLASH: u32 = 150;
+pub const MOVE_ACID_ARMOR: u32 = 151;
+pub const MOVE_CRABHAMMER: u32 = 152;
+pub const MOVE_EXPLOSION: u32 = 153;
+pub const MOVE_FURY_SWIPES: u32 = 154;
+pub const MOVE_BONEMERANG: u32 = 155;
+pub const MOVE_REST: u32 = 156;
+pub const MOVE_ROCK_SLIDE: u32 = 157;
+pub const MOVE_HYPER_FANG: u32 = 158;
+pub const MOVE_SHARPEN: u32 = 159;
+pub const MOVE_CONVERSION: u32 = 160;
+pub const MOVE_TRI_ATTACK: u32 = 161;
+pub const MOVE_SUPER_FANG: u32 = 162;
+pub const MOVE_SLASH: u32 = 163;
+pub const MOVE_SUBSTITUTE: u32 = 164;
+pub const MOVE_STRUGGLE: u32 = 165;
+pub const MOVES_COUNT_GEN1: u32 = 166;
+pub const MOVE_SKETCH: u32 = 166;
+pub const MOVE_TRIPLE_KICK: u32 = 167;
+pub const MOVE_THIEF: u32 = 168;
+pub const MOVE_SPIDER_WEB: u32 = 169;
+pub const MOVE_MIND_READER: u32 = 170;
+pub const MOVE_NIGHTMARE: u32 = 171;
+pub const MOVE_FLAME_WHEEL: u32 = 172;
+pub const MOVE_SNORE: u32 = 173;
+pub const MOVE_CURSE: u32 = 174;
+pub const MOVE_FLAIL: u32 = 175;
+pub const MOVE_CONVERSION_2: u32 = 176;
+pub const MOVE_AEROBLAST: u32 = 177;
+pub const MOVE_COTTON_SPORE: u32 = 178;
+pub const MOVE_REVERSAL: u32 = 179;
+pub const MOVE_SPITE: u32 = 180;
+pub const MOVE_POWDER_SNOW: u32 = 181;
+pub const MOVE_PROTECT: u32 = 182;
+pub const MOVE_MACH_PUNCH: u32 = 183;
+pub const MOVE_SCARY_FACE: u32 = 184;
+pub const MOVE_FEINT_ATTACK: u32 = 185;
+pub const MOVE_FAINT_ATTACK: u32 = 185;
+pub const MOVE_SWEET_KISS: u32 = 186;
+pub const MOVE_BELLY_DRUM: u32 = 187;
+pub const MOVE_SLUDGE_BOMB: u32 = 188;
+pub const MOVE_MUD_SLAP: u32 = 189;
+pub const MOVE_OCTAZOOKA: u32 = 190;
+pub const MOVE_SPIKES: u32 = 191;
+pub const MOVE_ZAP_CANNON: u32 = 192;
+pub const MOVE_FORESIGHT: u32 = 193;
+pub const MOVE_DESTINY_BOND: u32 = 194;
+pub const MOVE_PERISH_SONG: u32 = 195;
+pub const MOVE_ICY_WIND: u32 = 196;
+pub const MOVE_DETECT: u32 = 197;
+pub const MOVE_BONE_RUSH: u32 = 198;
+pub const MOVE_LOCK_ON: u32 = 199;
+pub const MOVE_OUTRAGE: u32 = 200;
+pub const MOVE_SANDSTORM: u32 = 201;
+pub const MOVE_GIGA_DRAIN: u32 = 202;
+pub const MOVE_ENDURE: u32 = 203;
+pub const MOVE_CHARM: u32 = 204;
+pub const MOVE_ROLLOUT: u32 = 205;
+pub const MOVE_FALSE_SWIPE: u32 = 206;
+pub const MOVE_SWAGGER: u32 = 207;
+pub const MOVE_MILK_DRINK: u32 = 208;
+pub const MOVE_SPARK: u32 = 209;
+pub const MOVE_FURY_CUTTER: u32 = 210;
+pub const MOVE_STEEL_WING: u32 = 211;
+pub const MOVE_MEAN_LOOK: u32 = 212;
+pub const MOVE_ATTRACT: u32 = 213;
+pub const MOVE_SLEEP_TALK: u32 = 214;
+pub const MOVE_HEAL_BELL: u32 = 215;
+pub const MOVE_RETURN: u32 = 216;
+pub const MOVE_PRESENT: u32 = 217;
+pub const MOVE_FRUSTRATION: u32 = 218;
+pub const MOVE_SAFEGUARD: u32 = 219;
+pub const MOVE_PAIN_SPLIT: u32 = 220;
+pub const MOVE_SACRED_FIRE: u32 = 221;
+pub const MOVE_MAGNITUDE: u32 = 222;
+pub const MOVE_DYNAMIC_PUNCH: u32 = 223;
+pub const MOVE_DYNAMICPUNCH: u32 = 223;
+pub const MOVE_MEGAHORN: u32 = 224;
+pub const MOVE_DRAGON_BREATH: u32 = 225;
+pub const MOVE_DRAGONBREATH: u32 = 225;
+pub const MOVE_BATON_PASS: u32 = 226;
+pub const MOVE_ENCORE: u32 = 227;
+pub const MOVE_PURSUIT: u32 = 228;
+pub const MOVE_RAPID_SPIN: u32 = 229;
+pub const MOVE_SWEET_SCENT: u32 = 230;
+pub const MOVE_IRON_TAIL: u32 = 231;
+pub const MOVE_METAL_CLAW: u32 = 232;
+pub const MOVE_VITAL_THROW: u32 = 233;
+pub const MOVE_MORNING_SUN: u32 = 234;
+pub const MOVE_SYNTHESIS: u32 = 235;
+pub const MOVE_MOONLIGHT: u32 = 236;
+pub const MOVE_HIDDEN_POWER: u32 = 237;
+pub const MOVE_CROSS_CHOP: u32 = 238;
+pub const MOVE_TWISTER: u32 = 239;
+pub const MOVE_RAIN_DANCE: u32 = 240;
+pub const MOVE_SUNNY_DAY: u32 = 241;
+pub const MOVE_CRUNCH: u32 = 242;
+pub const MOVE_MIRROR_COAT: u32 = 243;
+pub const MOVE_PSYCH_UP: u32 = 244;
+pub const MOVE_EXTREME_SPEED: u32 = 245;
+pub const MOVE_EXTREMESPEED: u32 = 245;
+pub const MOVE_ANCIENT_POWER: u32 = 246;
+pub const MOVE_ANCIENTPOWER: u32 = 246;
+pub const MOVE_SHADOW_BALL: u32 = 247;
+pub const MOVE_FUTURE_SIGHT: u32 = 248;
+pub const MOVE_ROCK_SMASH: u32 = 249;
+pub const MOVE_WHIRLPOOL: u32 = 250;
+pub const MOVE_BEAT_UP: u32 = 251;
+pub const MOVES_COUNT_GEN2: u32 = 252;
+pub const MOVE_FAKE_OUT: u32 = 252;
+pub const MOVE_UPROAR: u32 = 253;
+pub const MOVE_STOCKPILE: u32 = 254;
+pub const MOVE_SPIT_UP: u32 = 255;
+pub const MOVE_SWALLOW: u32 = 256;
+pub const MOVE_HEAT_WAVE: u32 = 257;
+pub const MOVE_HAIL: u32 = 258;
+pub const MOVE_TORMENT: u32 = 259;
+pub const MOVE_FLATTER: u32 = 260;
+pub const MOVE_WILL_O_WISP: u32 = 261;
+pub const MOVE_MEMENTO: u32 = 262;
+pub const MOVE_FACADE: u32 = 263;
+pub const MOVE_FOCUS_PUNCH: u32 = 264;
+pub const MOVE_SMELLING_SALTS: u32 = 265;
+pub const MOVE_SMELLINGSALT: u32 = 265;
+pub const MOVE_FOLLOW_ME: u32 = 266;
+pub const MOVE_NATURE_POWER: u32 = 267;
+pub const MOVE_CHARGE: u32 = 268;
+pub const MOVE_TAUNT: u32 = 269;
+pub const MOVE_HELPING_HAND: u32 = 270;
+pub const MOVE_TRICK: u32 = 271;
+pub const MOVE_ROLE_PLAY: u32 = 272;
+pub const MOVE_WISH: u32 = 273;
+pub const MOVE_ASSIST: u32 = 274;
+pub const MOVE_INGRAIN: u32 = 275;
+pub const MOVE_SUPERPOWER: u32 = 276;
+pub const MOVE_MAGIC_COAT: u32 = 277;
+pub const MOVE_RECYCLE: u32 = 278;
+pub const MOVE_REVENGE: u32 = 279;
+pub const MOVE_BRICK_BREAK: u32 = 280;
+pub const MOVE_YAWN: u32 = 281;
+pub const MOVE_KNOCK_OFF: u32 = 282;
+pub const MOVE_ENDEAVOR: u32 = 283;
+pub const MOVE_ERUPTION: u32 = 284;
+pub const MOVE_SKILL_SWAP: u32 = 285;
+pub const MOVE_IMPRISON: u32 = 286;
+pub const MOVE_REFRESH: u32 = 287;
+pub const MOVE_GRUDGE: u32 = 288;
+pub const MOVE_SNATCH: u32 = 289;
+pub const MOVE_SECRET_POWER: u32 = 290;
+pub const MOVE_DIVE: u32 = 291;
+pub const MOVE_ARM_THRUST: u32 = 292;
+pub const MOVE_CAMOUFLAGE: u32 = 293;
+pub const MOVE_TAIL_GLOW: u32 = 294;
+pub const MOVE_LUSTER_PURGE: u32 = 295;
+pub const MOVE_MIST_BALL: u32 = 296;
+pub const MOVE_FEATHER_DANCE: u32 = 297;
+pub const MOVE_FEATHERDANCE: u32 = 297;
+pub const MOVE_TEETER_DANCE: u32 = 298;
+pub const MOVE_BLAZE_KICK: u32 = 299;
+pub const MOVE_MUD_SPORT: u32 = 300;
+pub const MOVE_ICE_BALL: u32 = 301;
+pub const MOVE_NEEDLE_ARM: u32 = 302;
+pub const MOVE_SLACK_OFF: u32 = 303;
+pub const MOVE_HYPER_VOICE: u32 = 304;
+pub const MOVE_POISON_FANG: u32 = 305;
+pub const MOVE_CRUSH_CLAW: u32 = 306;
+pub const MOVE_BLAST_BURN: u32 = 307;
+pub const MOVE_HYDRO_CANNON: u32 = 308;
+pub const MOVE_METEOR_MASH: u32 = 309;
+pub const MOVE_ASTONISH: u32 = 310;
+pub const MOVE_WEATHER_BALL: u32 = 311;
+pub const MOVE_AROMATHERAPY: u32 = 312;
+pub const MOVE_FAKE_TEARS: u32 = 313;
+pub const MOVE_AIR_CUTTER: u32 = 314;
+pub const MOVE_OVERHEAT: u32 = 315;
+pub const MOVE_ODOR_SLEUTH: u32 = 316;
+pub const MOVE_ROCK_TOMB: u32 = 317;
+pub const MOVE_SILVER_WIND: u32 = 318;
+pub const MOVE_METAL_SOUND: u32 = 319;
+pub const MOVE_GRASS_WHISTLE: u32 = 320;
+pub const MOVE_GRASSWHISTLE: u32 = 320;
+pub const MOVE_TICKLE: u32 = 321;
+pub const MOVE_COSMIC_POWER: u32 = 322;
+pub const MOVE_WATER_SPOUT: u32 = 323;
+pub const MOVE_SIGNAL_BEAM: u32 = 324;
+pub const MOVE_SHADOW_PUNCH: u32 = 325;
+pub const MOVE_EXTRASENSORY: u32 = 326;
+pub const MOVE_SKY_UPPERCUT: u32 = 327;
+pub const MOVE_SAND_TOMB: u32 = 328;
+pub const MOVE_SHEER_COLD: u32 = 329;
+pub const MOVE_MUDDY_WATER: u32 = 330;
+pub const MOVE_BULLET_SEED: u32 = 331;
+pub const MOVE_AERIAL_ACE: u32 = 332;
+pub const MOVE_ICICLE_SPEAR: u32 = 333;
+pub const MOVE_IRON_DEFENSE: u32 = 334;
+pub const MOVE_BLOCK: u32 = 335;
+pub const MOVE_HOWL: u32 = 336;
+pub const MOVE_DRAGON_CLAW: u32 = 337;
+pub const MOVE_FRENZY_PLANT: u32 = 338;
+pub const MOVE_BULK_UP: u32 = 339;
+pub const MOVE_BOUNCE: u32 = 340;
+pub const MOVE_MUD_SHOT: u32 = 341;
+pub const MOVE_POISON_TAIL: u32 = 342;
+pub const MOVE_COVET: u32 = 343;
+pub const MOVE_VOLT_TACKLE: u32 = 344;
+pub const MOVE_MAGICAL_LEAF: u32 = 345;
+pub const MOVE_WATER_SPORT: u32 = 346;
+pub const MOVE_CALM_MIND: u32 = 347;
+pub const MOVE_LEAF_BLADE: u32 = 348;
+pub const MOVE_DRAGON_DANCE: u32 = 349;
+pub const MOVE_ROCK_BLAST: u32 = 350;
+pub const MOVE_SHOCK_WAVE: u32 = 351;
+pub const MOVE_WATER_PULSE: u32 = 352;
+pub const MOVE_DOOM_DESIRE: u32 = 353;
+pub const MOVE_PSYCHO_BOOST: u32 = 354;
+pub const MOVES_COUNT_GEN3: u32 = 355;
+pub const MOVE_ROOST: u32 = 355;
+pub const MOVE_GRAVITY: u32 = 356;
+pub const MOVE_MIRACLE_EYE: u32 = 357;
+pub const MOVE_WAKE_UP_SLAP: u32 = 358;
+pub const MOVE_HAMMER_ARM: u32 = 359;
+pub const MOVE_GYRO_BALL: u32 = 360;
+pub const MOVE_HEALING_WISH: u32 = 361;
+pub const MOVE_BRINE: u32 = 362;
+pub const MOVE_NATURAL_GIFT: u32 = 363;
+pub const MOVE_FEINT: u32 = 364;
+pub const MOVE_PLUCK: u32 = 365;
+pub const MOVE_TAILWIND: u32 = 366;
+pub const MOVE_ACUPRESSURE: u32 = 367;
+pub const MOVE_METAL_BURST: u32 = 368;
+pub const MOVE_U_TURN: u32 = 369;
+pub const MOVE_CLOSE_COMBAT: u32 = 370;
+pub const MOVE_PAYBACK: u32 = 371;
+pub const MOVE_ASSURANCE: u32 = 372;
+pub const MOVE_EMBARGO: u32 = 373;
+pub const MOVE_FLING: u32 = 374;
+pub const MOVE_PSYCHO_SHIFT: u32 = 375;
+pub const MOVE_TRUMP_CARD: u32 = 376;
+pub const MOVE_HEAL_BLOCK: u32 = 377;
+pub const MOVE_WRING_OUT: u32 = 378;
+pub const MOVE_POWER_TRICK: u32 = 379;
+pub const MOVE_GASTRO_ACID: u32 = 380;
+pub const MOVE_LUCKY_CHANT: u32 = 381;
+pub const MOVE_ME_FIRST: u32 = 382;
+pub const MOVE_COPYCAT: u32 = 383;
+pub const MOVE_POWER_SWAP: u32 = 384;
+pub const MOVE_GUARD_SWAP: u32 = 385;
+pub const MOVE_PUNISHMENT: u32 = 386;
+pub const MOVE_LAST_RESORT: u32 = 387;
+pub const MOVE_WORRY_SEED: u32 = 388;
+pub const MOVE_SUCKER_PUNCH: u32 = 389;
+pub const MOVE_TOXIC_SPIKES: u32 = 390;
+pub const MOVE_HEART_SWAP: u32 = 391;
+pub const MOVE_AQUA_RING: u32 = 392;
+pub const MOVE_MAGNET_RISE: u32 = 393;
+pub const MOVE_FLARE_BLITZ: u32 = 394;
+pub const MOVE_FORCE_PALM: u32 = 395;
+pub const MOVE_AURA_SPHERE: u32 = 396;
+pub const MOVE_ROCK_POLISH: u32 = 397;
+pub const MOVE_POISON_JAB: u32 = 398;
+pub const MOVE_DARK_PULSE: u32 = 399;
+pub const MOVE_NIGHT_SLASH: u32 = 400;
+pub const MOVE_AQUA_TAIL: u32 = 401;
+pub const MOVE_SEED_BOMB: u32 = 402;
+pub const MOVE_AIR_SLASH: u32 = 403;
+pub const MOVE_X_SCISSOR: u32 = 404;
+pub const MOVE_BUG_BUZZ: u32 = 405;
+pub const MOVE_DRAGON_PULSE: u32 = 406;
+pub const MOVE_DRAGON_RUSH: u32 = 407;
+pub const MOVE_POWER_GEM: u32 = 408;
+pub const MOVE_DRAIN_PUNCH: u32 = 409;
+pub const MOVE_VACUUM_WAVE: u32 = 410;
+pub const MOVE_FOCUS_BLAST: u32 = 411;
+pub const MOVE_ENERGY_BALL: u32 = 412;
+pub const MOVE_BRAVE_BIRD: u32 = 413;
+pub const MOVE_EARTH_POWER: u32 = 414;
+pub const MOVE_SWITCHEROO: u32 = 415;
+pub const MOVE_GIGA_IMPACT: u32 = 416;
+pub const MOVE_NASTY_PLOT: u32 = 417;
+pub const MOVE_BULLET_PUNCH: u32 = 418;
+pub const MOVE_AVALANCHE: u32 = 419;
+pub const MOVE_ICE_SHARD: u32 = 420;
+pub const MOVE_SHADOW_CLAW: u32 = 421;
+pub const MOVE_THUNDER_FANG: u32 = 422;
+pub const MOVE_ICE_FANG: u32 = 423;
+pub const MOVE_FIRE_FANG: u32 = 424;
+pub const MOVE_SHADOW_SNEAK: u32 = 425;
+pub const MOVE_MUD_BOMB: u32 = 426;
+pub const MOVE_PSYCHO_CUT: u32 = 427;
+pub const MOVE_ZEN_HEADBUTT: u32 = 428;
+pub const MOVE_MIRROR_SHOT: u32 = 429;
+pub const MOVE_FLASH_CANNON: u32 = 430;
+pub const MOVE_ROCK_CLIMB: u32 = 431;
+pub const MOVE_DEFOG: u32 = 432;
+pub const MOVE_TRICK_ROOM: u32 = 433;
+pub const MOVE_DRACO_METEOR: u32 = 434;
+pub const MOVE_DISCHARGE: u32 = 435;
+pub const MOVE_LAVA_PLUME: u32 = 436;
+pub const MOVE_LEAF_STORM: u32 = 437;
+pub const MOVE_POWER_WHIP: u32 = 438;
+pub const MOVE_ROCK_WRECKER: u32 = 439;
+pub const MOVE_CROSS_POISON: u32 = 440;
+pub const MOVE_GUNK_SHOT: u32 = 441;
+pub const MOVE_IRON_HEAD: u32 = 442;
+pub const MOVE_MAGNET_BOMB: u32 = 443;
+pub const MOVE_STONE_EDGE: u32 = 444;
+pub const MOVE_CAPTIVATE: u32 = 445;
+pub const MOVE_STEALTH_ROCK: u32 = 446;
+pub const MOVE_GRASS_KNOT: u32 = 447;
+pub const MOVE_CHATTER: u32 = 448;
+pub const MOVE_JUDGMENT: u32 = 449;
+pub const MOVE_BUG_BITE: u32 = 450;
+pub const MOVE_CHARGE_BEAM: u32 = 451;
+pub const MOVE_WOOD_HAMMER: u32 = 452;
+pub const MOVE_AQUA_JET: u32 = 453;
+pub const MOVE_ATTACK_ORDER: u32 = 454;
+pub const MOVE_DEFEND_ORDER: u32 = 455;
+pub const MOVE_HEAL_ORDER: u32 = 456;
+pub const MOVE_HEAD_SMASH: u32 = 457;
+pub const MOVE_DOUBLE_HIT: u32 = 458;
+pub const MOVE_ROAR_OF_TIME: u32 = 459;
+pub const MOVE_SPACIAL_REND: u32 = 460;
+pub const MOVE_LUNAR_DANCE: u32 = 461;
+pub const MOVE_CRUSH_GRIP: u32 = 462;
+pub const MOVE_MAGMA_STORM: u32 = 463;
+pub const MOVE_DARK_VOID: u32 = 464;
+pub const MOVE_SEED_FLARE: u32 = 465;
+pub const MOVE_OMINOUS_WIND: u32 = 466;
+pub const MOVE_SHADOW_FORCE: u32 = 467;
+pub const MOVES_COUNT_GEN4: u32 = 468;
+pub const MOVE_HONE_CLAWS: u32 = 468;
+pub const MOVE_WIDE_GUARD: u32 = 469;
+pub const MOVE_GUARD_SPLIT: u32 = 470;
+pub const MOVE_POWER_SPLIT: u32 = 471;
+pub const MOVE_WONDER_ROOM: u32 = 472;
+pub const MOVE_PSYSHOCK: u32 = 473;
+pub const MOVE_VENOSHOCK: u32 = 474;
+pub const MOVE_AUTOTOMIZE: u32 = 475;
+pub const MOVE_RAGE_POWDER: u32 = 476;
+pub const MOVE_TELEKINESIS: u32 = 477;
+pub const MOVE_MAGIC_ROOM: u32 = 478;
+pub const MOVE_SMACK_DOWN: u32 = 479;
+pub const MOVE_STORM_THROW: u32 = 480;
+pub const MOVE_FLAME_BURST: u32 = 481;
+pub const MOVE_SLUDGE_WAVE: u32 = 482;
+pub const MOVE_QUIVER_DANCE: u32 = 483;
+pub const MOVE_HEAVY_SLAM: u32 = 484;
+pub const MOVE_SYNCHRONOISE: u32 = 485;
+pub const MOVE_ELECTRO_BALL: u32 = 486;
+pub const MOVE_SOAK: u32 = 487;
+pub const MOVE_FLAME_CHARGE: u32 = 488;
+pub const MOVE_COIL: u32 = 489;
+pub const MOVE_LOW_SWEEP: u32 = 490;
+pub const MOVE_ACID_SPRAY: u32 = 491;
+pub const MOVE_FOUL_PLAY: u32 = 492;
+pub const MOVE_SIMPLE_BEAM: u32 = 493;
+pub const MOVE_ENTRAINMENT: u32 = 494;
+pub const MOVE_AFTER_YOU: u32 = 495;
+pub const MOVE_ROUND: u32 = 496;
+pub const MOVE_ECHOED_VOICE: u32 = 497;
+pub const MOVE_CHIP_AWAY: u32 = 498;
+pub const MOVE_CLEAR_SMOG: u32 = 499;
+pub const MOVE_STORED_POWER: u32 = 500;
+pub const MOVE_QUICK_GUARD: u32 = 501;
+pub const MOVE_ALLY_SWITCH: u32 = 502;
+pub const MOVE_SCALD: u32 = 503;
+pub const MOVE_SHELL_SMASH: u32 = 504;
+pub const MOVE_HEAL_PULSE: u32 = 505;
+pub const MOVE_HEX: u32 = 506;
+pub const MOVE_SKY_DROP: u32 = 507;
+pub const MOVE_SHIFT_GEAR: u32 = 508;
+pub const MOVE_CIRCLE_THROW: u32 = 509;
+pub const MOVE_INCINERATE: u32 = 510;
+pub const MOVE_QUASH: u32 = 511;
+pub const MOVE_ACROBATICS: u32 = 512;
+pub const MOVE_REFLECT_TYPE: u32 = 513;
+pub const MOVE_RETALIATE: u32 = 514;
+pub const MOVE_FINAL_GAMBIT: u32 = 515;
+pub const MOVE_BESTOW: u32 = 516;
+pub const MOVE_INFERNO: u32 = 517;
+pub const MOVE_WATER_PLEDGE: u32 = 518;
+pub const MOVE_FIRE_PLEDGE: u32 = 519;
+pub const MOVE_GRASS_PLEDGE: u32 = 520;
+pub const MOVE_VOLT_SWITCH: u32 = 521;
+pub const MOVE_STRUGGLE_BUG: u32 = 522;
+pub const MOVE_BULLDOZE: u32 = 523;
+pub const MOVE_FROST_BREATH: u32 = 524;
+pub const MOVE_DRAGON_TAIL: u32 = 525;
+pub const MOVE_WORK_UP: u32 = 526;
+pub const MOVE_ELECTROWEB: u32 = 527;
+pub const MOVE_WILD_CHARGE: u32 = 528;
+pub const MOVE_DRILL_RUN: u32 = 529;
+pub const MOVE_DUAL_CHOP: u32 = 530;
+pub const MOVE_HEART_STAMP: u32 = 531;
+pub const MOVE_HORN_LEECH: u32 = 532;
+pub const MOVE_SACRED_SWORD: u32 = 533;
+pub const MOVE_RAZOR_SHELL: u32 = 534;
+pub const MOVE_HEAT_CRASH: u32 = 535;
+pub const MOVE_LEAF_TORNADO: u32 = 536;
+pub const MOVE_STEAMROLLER: u32 = 537;
+pub const MOVE_COTTON_GUARD: u32 = 538;
+pub const MOVE_NIGHT_DAZE: u32 = 539;
+pub const MOVE_PSYSTRIKE: u32 = 540;
+pub const MOVE_TAIL_SLAP: u32 = 541;
+pub const MOVE_HURRICANE: u32 = 542;
+pub const MOVE_HEAD_CHARGE: u32 = 543;
+pub const MOVE_GEAR_GRIND: u32 = 544;
+pub const MOVE_SEARING_SHOT: u32 = 545;
+pub const MOVE_TECHNO_BLAST: u32 = 546;
+pub const MOVE_RELIC_SONG: u32 = 547;
+pub const MOVE_SECRET_SWORD: u32 = 548;
+pub const MOVE_GLACIATE: u32 = 549;
+pub const MOVE_BOLT_STRIKE: u32 = 550;
+pub const MOVE_BLUE_FLARE: u32 = 551;
+pub const MOVE_FIERY_DANCE: u32 = 552;
+pub const MOVE_FREEZE_SHOCK: u32 = 553;
+pub const MOVE_ICE_BURN: u32 = 554;
+pub const MOVE_SNARL: u32 = 555;
+pub const MOVE_ICICLE_CRASH: u32 = 556;
+pub const MOVE_V_CREATE: u32 = 557;
+pub const MOVE_FUSION_FLARE: u32 = 558;
+pub const MOVE_FUSION_BOLT: u32 = 559;
+pub const MOVES_COUNT_GEN5: u32 = 560;
+pub const MOVE_FLYING_PRESS: u32 = 560;
+pub const MOVE_MAT_BLOCK: u32 = 561;
+pub const MOVE_BELCH: u32 = 562;
+pub const MOVE_ROTOTILLER: u32 = 563;
+pub const MOVE_STICKY_WEB: u32 = 564;
+pub const MOVE_FELL_STINGER: u32 = 565;
+pub const MOVE_PHANTOM_FORCE: u32 = 566;
+pub const MOVE_TRICK_OR_TREAT: u32 = 567;
+pub const MOVE_NOBLE_ROAR: u32 = 568;
+pub const MOVE_ION_DELUGE: u32 = 569;
+pub const MOVE_PARABOLIC_CHARGE: u32 = 570;
+pub const MOVE_FORESTS_CURSE: u32 = 571;
+pub const MOVE_PETAL_BLIZZARD: u32 = 572;
+pub const MOVE_FREEZE_DRY: u32 = 573;
+pub const MOVE_DISARMING_VOICE: u32 = 574;
+pub const MOVE_PARTING_SHOT: u32 = 575;
+pub const MOVE_TOPSY_TURVY: u32 = 576;
+pub const MOVE_DRAINING_KISS: u32 = 577;
+pub const MOVE_CRAFTY_SHIELD: u32 = 578;
+pub const MOVE_FLOWER_SHIELD: u32 = 579;
+pub const MOVE_GRASSY_TERRAIN: u32 = 580;
+pub const MOVE_MISTY_TERRAIN: u32 = 581;
+pub const MOVE_ELECTRIFY: u32 = 582;
+pub const MOVE_PLAY_ROUGH: u32 = 583;
+pub const MOVE_FAIRY_WIND: u32 = 584;
+pub const MOVE_MOONBLAST: u32 = 585;
+pub const MOVE_BOOMBURST: u32 = 586;
+pub const MOVE_FAIRY_LOCK: u32 = 587;
+pub const MOVE_KINGS_SHIELD: u32 = 588;
+pub const MOVE_PLAY_NICE: u32 = 589;
+pub const MOVE_CONFIDE: u32 = 590;
+pub const MOVE_DIAMOND_STORM: u32 = 591;
+pub const MOVE_STEAM_ERUPTION: u32 = 592;
+pub const MOVE_HYPERSPACE_HOLE: u32 = 593;
+pub const MOVE_WATER_SHURIKEN: u32 = 594;
+pub const MOVE_MYSTICAL_FIRE: u32 = 595;
+pub const MOVE_SPIKY_SHIELD: u32 = 596;
+pub const MOVE_AROMATIC_MIST: u32 = 597;
+pub const MOVE_EERIE_IMPULSE: u32 = 598;
+pub const MOVE_VENOM_DRENCH: u32 = 599;
+pub const MOVE_POWDER: u32 = 600;
+pub const MOVE_GEOMANCY: u32 = 601;
+pub const MOVE_MAGNETIC_FLUX: u32 = 602;
+pub const MOVE_HAPPY_HOUR: u32 = 603;
+pub const MOVE_ELECTRIC_TERRAIN: u32 = 604;
+pub const MOVE_DAZZLING_GLEAM: u32 = 605;
+pub const MOVE_CELEBRATE: u32 = 606;
+pub const MOVE_HOLD_HANDS: u32 = 607;
+pub const MOVE_BABY_DOLL_EYES: u32 = 608;
+pub const MOVE_NUZZLE: u32 = 609;
+pub const MOVE_HOLD_BACK: u32 = 610;
+pub const MOVE_INFESTATION: u32 = 611;
+pub const MOVE_POWER_UP_PUNCH: u32 = 612;
+pub const MOVE_OBLIVION_WING: u32 = 613;
+pub const MOVE_THOUSAND_ARROWS: u32 = 614;
+pub const MOVE_THOUSAND_WAVES: u32 = 615;
+pub const MOVE_LANDS_WRATH: u32 = 616;
+pub const MOVE_LIGHT_OF_RUIN: u32 = 617;
+pub const MOVE_ORIGIN_PULSE: u32 = 618;
+pub const MOVE_PRECIPICE_BLADES: u32 = 619;
+pub const MOVE_DRAGON_ASCENT: u32 = 620;
+pub const MOVE_HYPERSPACE_FURY: u32 = 621;
+pub const MOVES_COUNT_GEN6: u32 = 622;
+pub const MOVE_SHORE_UP: u32 = 622;
+pub const MOVE_FIRST_IMPRESSION: u32 = 623;
+pub const MOVE_BANEFUL_BUNKER: u32 = 624;
+pub const MOVE_SPIRIT_SHACKLE: u32 = 625;
+pub const MOVE_DARKEST_LARIAT: u32 = 626;
+pub const MOVE_SPARKLING_ARIA: u32 = 627;
+pub const MOVE_ICE_HAMMER: u32 = 628;
+pub const MOVE_FLORAL_HEALING: u32 = 629;
+pub const MOVE_HIGH_HORSEPOWER: u32 = 630;
+pub const MOVE_STRENGTH_SAP: u32 = 631;
+pub const MOVE_SOLAR_BLADE: u32 = 632;
+pub const MOVE_LEAFAGE: u32 = 633;
+pub const MOVE_SPOTLIGHT: u32 = 634;
+pub const MOVE_TOXIC_THREAD: u32 = 635;
+pub const MOVE_LASER_FOCUS: u32 = 636;
+pub const MOVE_GEAR_UP: u32 = 637;
+pub const MOVE_THROAT_CHOP: u32 = 638;
+pub const MOVE_POLLEN_PUFF: u32 = 639;
+pub const MOVE_ANCHOR_SHOT: u32 = 640;
+pub const MOVE_PSYCHIC_TERRAIN: u32 = 641;
+pub const MOVE_LUNGE: u32 = 642;
+pub const MOVE_FIRE_LASH: u32 = 643;
+pub const MOVE_POWER_TRIP: u32 = 644;
+pub const MOVE_BURN_UP: u32 = 645;
+pub const MOVE_SPEED_SWAP: u32 = 646;
+pub const MOVE_SMART_STRIKE: u32 = 647;
+pub const MOVE_PURIFY: u32 = 648;
+pub const MOVE_REVELATION_DANCE: u32 = 649;
+pub const MOVE_CORE_ENFORCER: u32 = 650;
+pub const MOVE_TROP_KICK: u32 = 651;
+pub const MOVE_INSTRUCT: u32 = 652;
+pub const MOVE_BEAK_BLAST: u32 = 653;
+pub const MOVE_CLANGING_SCALES: u32 = 654;
+pub const MOVE_DRAGON_HAMMER: u32 = 655;
+pub const MOVE_BRUTAL_SWING: u32 = 656;
+pub const MOVE_AURORA_VEIL: u32 = 657;
+pub const MOVE_SHELL_TRAP: u32 = 658;
+pub const MOVE_FLEUR_CANNON: u32 = 659;
+pub const MOVE_PSYCHIC_FANGS: u32 = 660;
+pub const MOVE_STOMPING_TANTRUM: u32 = 661;
+pub const MOVE_SHADOW_BONE: u32 = 662;
+pub const MOVE_ACCELEROCK: u32 = 663;
+pub const MOVE_LIQUIDATION: u32 = 664;
+pub const MOVE_PRISMATIC_LASER: u32 = 665;
+pub const MOVE_SPECTRAL_THIEF: u32 = 666;
+pub const MOVE_SUNSTEEL_STRIKE: u32 = 667;
+pub const MOVE_MOONGEIST_BEAM: u32 = 668;
+pub const MOVE_TEARFUL_LOOK: u32 = 669;
+pub const MOVE_ZING_ZAP: u32 = 670;
+pub const MOVE_NATURES_MADNESS: u32 = 671;
+pub const MOVE_MULTI_ATTACK: u32 = 672;
+pub const MOVE_MIND_BLOWN: u32 = 673;
+pub const MOVE_PLASMA_FISTS: u32 = 674;
+pub const MOVE_PHOTON_GEYSER: u32 = 675;
+pub const MOVE_ZIPPY_ZAP: u32 = 676;
+pub const MOVE_SPLISHY_SPLASH: u32 = 677;
+pub const MOVE_FLOATY_FALL: u32 = 678;
+pub const MOVE_PIKA_PAPOW: u32 = 679;
+pub const MOVE_BOUNCY_BUBBLE: u32 = 680;
+pub const MOVE_BUZZY_BUZZ: u32 = 681;
+pub const MOVE_SIZZLY_SLIDE: u32 = 682;
+pub const MOVE_GLITZY_GLOW: u32 = 683;
+pub const MOVE_BADDY_BAD: u32 = 684;
+pub const MOVE_SAPPY_SEED: u32 = 685;
+pub const MOVE_FREEZY_FROST: u32 = 686;
+pub const MOVE_SPARKLY_SWIRL: u32 = 687;
+pub const MOVE_VEEVEE_VOLLEY: u32 = 688;
+pub const MOVE_DOUBLE_IRON_BASH: u32 = 689;
+pub const MOVES_COUNT_GEN7: u32 = 690;
+pub const MOVE_DYNAMAX_CANNON: u32 = 690;
+pub const MOVE_SNIPE_SHOT: u32 = 691;
+pub const MOVE_JAW_LOCK: u32 = 692;
+pub const MOVE_STUFF_CHEEKS: u32 = 693;
+pub const MOVE_NO_RETREAT: u32 = 694;
+pub const MOVE_TAR_SHOT: u32 = 695;
+pub const MOVE_MAGIC_POWDER: u32 = 696;
+pub const MOVE_DRAGON_DARTS: u32 = 697;
+pub const MOVE_TEATIME: u32 = 698;
+pub const MOVE_OCTOLOCK: u32 = 699;
+pub const MOVE_BOLT_BEAK: u32 = 700;
+pub const MOVE_FISHIOUS_REND: u32 = 701;
+pub const MOVE_COURT_CHANGE: u32 = 702;
+pub const MOVE_CLANGOROUS_SOUL: u32 = 703;
+pub const MOVE_BODY_PRESS: u32 = 704;
+pub const MOVE_DECORATE: u32 = 705;
+pub const MOVE_DRUM_BEATING: u32 = 706;
+pub const MOVE_SNAP_TRAP: u32 = 707;
+pub const MOVE_PYRO_BALL: u32 = 708;
+pub const MOVE_BEHEMOTH_BLADE: u32 = 709;
+pub const MOVE_BEHEMOTH_BASH: u32 = 710;
+pub const MOVE_AURA_WHEEL: u32 = 711;
+pub const MOVE_BREAKING_SWIPE: u32 = 712;
+pub const MOVE_BRANCH_POKE: u32 = 713;
+pub const MOVE_OVERDRIVE: u32 = 714;
+pub const MOVE_APPLE_ACID: u32 = 715;
+pub const MOVE_GRAV_APPLE: u32 = 716;
+pub const MOVE_SPIRIT_BREAK: u32 = 717;
+pub const MOVE_STRANGE_STEAM: u32 = 718;
+pub const MOVE_LIFE_DEW: u32 = 719;
+pub const MOVE_OBSTRUCT: u32 = 720;
+pub const MOVE_FALSE_SURRENDER: u32 = 721;
+pub const MOVE_METEOR_ASSAULT: u32 = 722;
+pub const MOVE_ETERNABEAM: u32 = 723;
+pub const MOVE_STEEL_BEAM: u32 = 724;
+pub const MOVE_EXPANDING_FORCE: u32 = 725;
+pub const MOVE_STEEL_ROLLER: u32 = 726;
+pub const MOVE_SCALE_SHOT: u32 = 727;
+pub const MOVE_METEOR_BEAM: u32 = 728;
+pub const MOVE_SHELL_SIDE_ARM: u32 = 729;
+pub const MOVE_MISTY_EXPLOSION: u32 = 730;
+pub const MOVE_GRASSY_GLIDE: u32 = 731;
+pub const MOVE_RISING_VOLTAGE: u32 = 732;
+pub const MOVE_TERRAIN_PULSE: u32 = 733;
+pub const MOVE_SKITTER_SMACK: u32 = 734;
+pub const MOVE_BURNING_JEALOUSY: u32 = 735;
+pub const MOVE_LASH_OUT: u32 = 736;
+pub const MOVE_POLTERGEIST: u32 = 737;
+pub const MOVE_CORROSIVE_GAS: u32 = 738;
+pub const MOVE_COACHING: u32 = 739;
+pub const MOVE_FLIP_TURN: u32 = 740;
+pub const MOVE_TRIPLE_AXEL: u32 = 741;
+pub const MOVE_DUAL_WINGBEAT: u32 = 742;
+pub const MOVE_SCORCHING_SANDS: u32 = 743;
+pub const MOVE_JUNGLE_HEALING: u32 = 744;
+pub const MOVE_WICKED_BLOW: u32 = 745;
+pub const MOVE_SURGING_STRIKES: u32 = 746;
+pub const MOVE_THUNDER_CAGE: u32 = 747;
+pub const MOVE_DRAGON_ENERGY: u32 = 748;
+pub const MOVE_FREEZING_GLARE: u32 = 749;
+pub const MOVE_FIERY_WRATH: u32 = 750;
+pub const MOVE_THUNDEROUS_KICK: u32 = 751;
+pub const MOVE_GLACIAL_LANCE: u32 = 752;
+pub const MOVE_ASTRAL_BARRAGE: u32 = 753;
+pub const MOVE_EERIE_SPELL: u32 = 754;
+pub const MOVE_DIRE_CLAW: u32 = 755;
+pub const MOVE_PSYSHIELD_BASH: u32 = 756;
+pub const MOVE_POWER_SHIFT: u32 = 757;
+pub const MOVE_STONE_AXE: u32 = 758;
+pub const MOVE_SPRINGTIDE_STORM: u32 = 759;
+pub const MOVE_MYSTICAL_POWER: u32 = 760;
+pub const MOVE_RAGING_FURY: u32 = 761;
+pub const MOVE_WAVE_CRASH: u32 = 762;
+pub const MOVE_CHLOROBLAST: u32 = 763;
+pub const MOVE_MOUNTAIN_GALE: u32 = 764;
+pub const MOVE_VICTORY_DANCE: u32 = 765;
+pub const MOVE_HEADLONG_RUSH: u32 = 766;
+pub const MOVE_BARB_BARRAGE: u32 = 767;
+pub const MOVE_ESPER_WING: u32 = 768;
+pub const MOVE_BITTER_MALICE: u32 = 769;
+pub const MOVE_SHELTER: u32 = 770;
+pub const MOVE_TRIPLE_ARROWS: u32 = 771;
+pub const MOVE_INFERNAL_PARADE: u32 = 772;
+pub const MOVE_CEASELESS_EDGE: u32 = 773;
+pub const MOVE_BLEAKWIND_STORM: u32 = 774;
+pub const MOVE_WILDBOLT_STORM: u32 = 775;
+pub const MOVE_SANDSEAR_STORM: u32 = 776;
+pub const MOVE_LUNAR_BLESSING: u32 = 777;
+pub const MOVE_TAKE_HEART: u32 = 778;
+pub const MOVES_COUNT_GEN8: u32 = 779;
+pub const MOVE_TERA_BLAST: u32 = 779;
+pub const MOVE_SILK_TRAP: u32 = 780;
+pub const MOVE_AXE_KICK: u32 = 781;
+pub const MOVE_LAST_RESPECTS: u32 = 782;
+pub const MOVE_LUMINA_CRASH: u32 = 783;
+pub const MOVE_ORDER_UP: u32 = 784;
+pub const MOVE_JET_PUNCH: u32 = 785;
+pub const MOVE_SPICY_EXTRACT: u32 = 786;
+pub const MOVE_SPIN_OUT: u32 = 787;
+pub const MOVE_POPULATION_BOMB: u32 = 788;
+pub const MOVE_ICE_SPINNER: u32 = 789;
+pub const MOVE_GLAIVE_RUSH: u32 = 790;
+pub const MOVE_REVIVAL_BLESSING: u32 = 791;
+pub const MOVE_SALT_CURE: u32 = 792;
+pub const MOVE_TRIPLE_DIVE: u32 = 793;
+pub const MOVE_MORTAL_SPIN: u32 = 794;
+pub const MOVE_DOODLE: u32 = 795;
+pub const MOVE_FILLET_AWAY: u32 = 796;
+pub const MOVE_KOWTOW_CLEAVE: u32 = 797;
+pub const MOVE_FLOWER_TRICK: u32 = 798;
+pub const MOVE_TORCH_SONG: u32 = 799;
+pub const MOVE_AQUA_STEP: u32 = 800;
+pub const MOVE_RAGING_BULL: u32 = 801;
+pub const MOVE_MAKE_IT_RAIN: u32 = 802;
+pub const MOVE_RUINATION: u32 = 803;
+pub const MOVE_COLLISION_COURSE: u32 = 804;
+pub const MOVE_ELECTRO_DRIFT: u32 = 805;
+pub const MOVE_SHED_TAIL: u32 = 806;
+pub const MOVE_CHILLY_RECEPTION: u32 = 807;
+pub const MOVE_TIDY_UP: u32 = 808;
+pub const MOVE_SNOWSCAPE: u32 = 809;
+pub const MOVE_POUNCE: u32 = 810;
+pub const MOVE_TRAILBLAZE: u32 = 811;
+pub const MOVE_CHILLING_WATER: u32 = 812;
+pub const MOVE_HYPER_DRILL: u32 = 813;
+pub const MOVE_TWIN_BEAM: u32 = 814;
+pub const MOVE_RAGE_FIST: u32 = 815;
+pub const MOVE_ARMOR_CANNON: u32 = 816;
+pub const MOVE_BITTER_BLADE: u32 = 817;
+pub const MOVE_DOUBLE_SHOCK: u32 = 818;
+pub const MOVE_GIGATON_HAMMER: u32 = 819;
+pub const MOVE_COMEUPPANCE: u32 = 820;
+pub const MOVE_AQUA_CUTTER: u32 = 821;
+pub const MOVE_BLAZING_TORQUE: u32 = 822;
+pub const MOVE_WICKED_TORQUE: u32 = 823;
+pub const MOVE_NOXIOUS_TORQUE: u32 = 824;
+pub const MOVE_COMBAT_TORQUE: u32 = 825;
+pub const MOVE_MAGICAL_TORQUE: u32 = 826;
+pub const MOVE_PSYBLADE: u32 = 827;
+pub const MOVE_HYDRO_STEAM: u32 = 828;
+pub const MOVE_BLOOD_MOON: u32 = 829;
+pub const MOVE_MATCHA_GOTCHA: u32 = 830;
+pub const MOVE_SYRUP_BOMB: u32 = 831;
+pub const MOVE_IVY_CUDGEL: u32 = 832;
+pub const MOVE_ELECTRO_SHOT: u32 = 833;
+pub const MOVE_TERA_STARSTORM: u32 = 834;
+pub const MOVE_FICKLE_BEAM: u32 = 835;
+pub const MOVE_BURNING_BULWARK: u32 = 836;
+pub const MOVE_THUNDERCLAP: u32 = 837;
+pub const MOVE_MIGHTY_CLEAVE: u32 = 838;
+pub const MOVE_TACHYON_CUTTER: u32 = 839;
+pub const MOVE_HARD_PRESS: u32 = 840;
+pub const MOVE_DRAGON_CHEER: u32 = 841;
+pub const MOVE_ALLURING_VOICE: u32 = 842;
+pub const MOVE_TEMPER_FLARE: u32 = 843;
+pub const MOVE_SUPERCELL_SLAM: u32 = 844;
+pub const MOVE_PSYCHIC_NOISE: u32 = 845;
+pub const MOVE_UPPER_HAND: u32 = 846;
+pub const MOVE_MALIGNANT_CHAIN: u32 = 847;
+pub const MOVES_COUNT_GEN9: u32 = 848;
+pub const MOVES_COUNT: u32 = 848;
+pub const MOVE_BREAKNECK_BLITZ: u32 = 848;
+pub const MOVE_ALL_OUT_PUMMELING: u32 = 849;
+pub const MOVE_SUPERSONIC_SKYSTRIKE: u32 = 850;
+pub const MOVE_ACID_DOWNPOUR: u32 = 851;
+pub const MOVE_TECTONIC_RAGE: u32 = 852;
+pub const MOVE_CONTINENTAL_CRUSH: u32 = 853;
+pub const MOVE_SAVAGE_SPIN_OUT: u32 = 854;
+pub const MOVE_NEVER_ENDING_NIGHTMARE: u32 = 855;
+pub const MOVE_CORKSCREW_CRASH: u32 = 856;
+pub const MOVE_INFERNO_OVERDRIVE: u32 = 857;
+pub const MOVE_HYDRO_VORTEX: u32 = 858;
+pub const MOVE_BLOOM_DOOM: u32 = 859;
+pub const MOVE_GIGAVOLT_HAVOC: u32 = 860;
+pub const MOVE_SHATTERED_PSYCHE: u32 = 861;
+pub const MOVE_SUBZERO_SLAMMER: u32 = 862;
+pub const MOVE_DEVASTATING_DRAKE: u32 = 863;
+pub const MOVE_BLACK_HOLE_ECLIPSE: u32 = 864;
+pub const MOVE_TWINKLE_TACKLE: u32 = 865;
+pub const MOVE_CATASTROPIKA: u32 = 866;
+pub const MOVE_10000000_VOLT_THUNDERBOLT: u32 = 867;
+pub const MOVE_STOKED_SPARKSURFER: u32 = 868;
+pub const MOVE_EXTREME_EVOBOOST: u32 = 869;
+pub const MOVE_PULVERIZING_PANCAKE: u32 = 870;
+pub const MOVE_GENESIS_SUPERNOVA: u32 = 871;
+pub const MOVE_SINISTER_ARROW_RAID: u32 = 872;
+pub const MOVE_MALICIOUS_MOONSAULT: u32 = 873;
+pub const MOVE_OCEANIC_OPERETTA: u32 = 874;
+pub const MOVE_SPLINTERED_STORMSHARDS: u32 = 875;
+pub const MOVE_LETS_SNUGGLE_FOREVER: u32 = 876;
+pub const MOVE_CLANGOROUS_SOULBLAZE: u32 = 877;
+pub const MOVE_GUARDIAN_OF_ALOLA: u32 = 878;
+pub const MOVE_SEARING_SUNRAZE_SMASH: u32 = 879;
+pub const MOVE_MENACING_MOONRAZE_MAELSTROM: u32 = 880;
+pub const MOVE_LIGHT_THAT_BURNS_THE_SKY: u32 = 881;
+pub const MOVE_SOUL_STEALING_7_STAR_STRIKE: u32 = 882;
+pub const FIRST_Z_MOVE: u32 = 848;
+pub const LAST_Z_MOVE: u32 = 882;
+pub const MOVES_COUNT_Z: u32 = 883;
+pub const FIRST_MAX_MOVE: u32 = 883;
+pub const MOVE_UNAVAILABLE: u32 = 65535;
 pub type va_list = *mut ::std::os::raw::c_char;
 extern "C" {
     pub fn __va_start(arg1: *mut *mut ::std::os::raw::c_char, ...);
@@ -37344,6 +38275,420 @@ fn bindgen_test_layout_MapPosition() {
         )
     );
 }
+pub type ItemUseFunc = ::std::option::Option<unsafe extern "C" fn(arg1: u8_)>;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Item {
+    pub price: u32_,
+    pub secondaryId: u16_,
+    pub fieldUseFunc: ItemUseFunc,
+    pub description: *const u8_,
+    pub effect: *const u8_,
+    pub name: [u8_; 14usize],
+    pub pluralName: [u8_; 16usize],
+    pub holdEffect: u8_,
+    pub holdEffectParam: u8_,
+    pub importance: u8_,
+    pub pocket: u8_,
+    pub type_: u8_,
+    pub battleUsage: u8_,
+    pub flingPower: u8_,
+}
+#[test]
+fn bindgen_test_layout_Item() {
+    const UNINIT: ::std::mem::MaybeUninit<Item> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<Item>(),
+        72usize,
+        concat!("Size of: ", stringify!(Item))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<Item>(),
+        8usize,
+        concat!("Alignment of ", stringify!(Item))
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).price) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(Item),
+            "::",
+            stringify!(price)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).secondaryId) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(Item),
+            "::",
+            stringify!(secondaryId)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).fieldUseFunc) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(Item),
+            "::",
+            stringify!(fieldUseFunc)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).description) as usize - ptr as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(Item),
+            "::",
+            stringify!(description)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).effect) as usize - ptr as usize },
+        24usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(Item),
+            "::",
+            stringify!(effect)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).name) as usize - ptr as usize },
+        32usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(Item),
+            "::",
+            stringify!(name)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).pluralName) as usize - ptr as usize },
+        46usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(Item),
+            "::",
+            stringify!(pluralName)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).holdEffect) as usize - ptr as usize },
+        62usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(Item),
+            "::",
+            stringify!(holdEffect)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).holdEffectParam) as usize - ptr as usize },
+        63usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(Item),
+            "::",
+            stringify!(holdEffectParam)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).importance) as usize - ptr as usize },
+        64usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(Item),
+            "::",
+            stringify!(importance)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).pocket) as usize - ptr as usize },
+        65usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(Item),
+            "::",
+            stringify!(pocket)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).type_) as usize - ptr as usize },
+        66usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(Item),
+            "::",
+            stringify!(type_)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).battleUsage) as usize - ptr as usize },
+        67usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(Item),
+            "::",
+            stringify!(battleUsage)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).flingPower) as usize - ptr as usize },
+        68usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(Item),
+            "::",
+            stringify!(flingPower)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct BagPocket {
+    pub itemSlots: *mut ItemSlot,
+    pub capacity: u8_,
+}
+#[test]
+fn bindgen_test_layout_BagPocket() {
+    const UNINIT: ::std::mem::MaybeUninit<BagPocket> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<BagPocket>(),
+        16usize,
+        concat!("Size of: ", stringify!(BagPocket))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<BagPocket>(),
+        8usize,
+        concat!("Alignment of ", stringify!(BagPocket))
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).itemSlots) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(BagPocket),
+            "::",
+            stringify!(itemSlots)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).capacity) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(BagPocket),
+            "::",
+            stringify!(capacity)
+        )
+    );
+}
+extern "C" {
+    pub static gItemsInfo: [Item; 0usize];
+}
+extern "C" {
+    pub static mut gBagPockets: [BagPocket; 0usize];
+}
+extern "C" {
+    pub fn ApplyNewEncryptionKeyToBagItems(newKey: u32_);
+}
+extern "C" {
+    pub fn ApplyNewEncryptionKeyToBagItems_(newKey: u32_);
+}
+extern "C" {
+    pub fn SetBagItemsPointers();
+}
+extern "C" {
+    pub fn CopyItemName(itemId: u16_, dst: *mut u8_);
+}
+extern "C" {
+    pub fn CopyItemNameHandlePlural(itemId: u16_, dst: *mut u8_, quantity: u32_);
+}
+extern "C" {
+    pub fn IsBagPocketNonEmpty(pocket: u8_) -> bool8;
+}
+extern "C" {
+    pub fn CheckBagHasItem(itemId: u16_, count: u16_) -> bool8;
+}
+extern "C" {
+    pub fn HasAtLeastOneBerry() -> bool8;
+}
+extern "C" {
+    pub fn CheckBagHasSpace(itemId: u16_, count: u16_) -> bool8;
+}
+extern "C" {
+    pub fn GetFreeSpaceForItemInBag(itemId: u16_) -> u32_;
+}
+extern "C" {
+    pub fn AddBagItem(itemId: u16_, count: u16_) -> bool8;
+}
+extern "C" {
+    pub fn RemoveBagItem(itemId: u16_, count: u16_) -> bool8;
+}
+extern "C" {
+    pub fn GetPocketByItemId(itemId: u16_) -> u8_;
+}
+extern "C" {
+    pub fn ClearItemSlots(itemSlots: *mut ItemSlot, itemCount: u8_);
+}
+extern "C" {
+    pub fn CountUsedPCItemSlots() -> u8_;
+}
+extern "C" {
+    pub fn CheckPCHasItem(itemId: u16_, count: u16_) -> bool8;
+}
+extern "C" {
+    pub fn AddPCItem(itemId: u16_, count: u16_) -> bool8;
+}
+extern "C" {
+    pub fn RemovePCItem(index: u8_, count: u16_);
+}
+extern "C" {
+    pub fn CompactPCItems();
+}
+extern "C" {
+    pub fn SwapRegisteredBike();
+}
+extern "C" {
+    pub fn BagGetItemIdByPocketPosition(pocketId: u8_, pocketPos: u16_) -> u16_;
+}
+extern "C" {
+    pub fn BagGetQuantityByPocketPosition(pocketId: u8_, pocketPos: u16_) -> u16_;
+}
+extern "C" {
+    pub fn CompactItemsInBagPocket(bagPocket: *mut BagPocket);
+}
+extern "C" {
+    pub fn SortBerriesOrTMHMs(bagPocket: *mut BagPocket);
+}
+extern "C" {
+    pub fn MoveItemSlotInList(itemSlots_: *mut ItemSlot, from: u32_, to_: u32_);
+}
+extern "C" {
+    pub fn ClearBag();
+}
+extern "C" {
+    pub fn CountTotalItemQuantityInBag(itemId: u16_) -> u16_;
+}
+extern "C" {
+    pub fn AddPyramidBagItem(itemId: u16_, count: u16_) -> bool8;
+}
+extern "C" {
+    pub fn RemovePyramidBagItem(itemId: u16_, count: u16_) -> bool8;
+}
+extern "C" {
+    pub fn ItemId_GetName(itemId: u16_) -> *const u8_;
+}
+extern "C" {
+    pub fn ItemId_GetPrice(itemId: u16_) -> u32_;
+}
+extern "C" {
+    pub fn ItemId_GetEffect(itemId: u32_) -> *const u8_;
+}
+extern "C" {
+    pub fn ItemId_GetHoldEffect(itemId: u32_) -> u32_;
+}
+extern "C" {
+    pub fn ItemId_GetHoldEffectParam(itemId: u32_) -> u32_;
+}
+extern "C" {
+    pub fn ItemId_GetDescription(itemId: u16_) -> *const u8_;
+}
+extern "C" {
+    pub fn ItemId_GetImportance(itemId: u16_) -> u8_;
+}
+extern "C" {
+    pub fn ItemId_GetPocket(itemId: u16_) -> u8_;
+}
+extern "C" {
+    pub fn ItemId_GetType(itemId: u16_) -> u8_;
+}
+extern "C" {
+    pub fn ItemId_GetFieldFunc(itemId: u16_) -> ItemUseFunc;
+}
+extern "C" {
+    pub fn ItemId_GetBattleUsage(itemId: u16_) -> u8_;
+}
+extern "C" {
+    pub fn ItemId_GetSecondaryId(itemId: u16_) -> u8_;
+}
+extern "C" {
+    pub fn ItemId_GetFlingPower(itemId: u32_) -> u32_;
+}
+extern "C" {
+    pub fn GetItemStatus1Mask(itemId: u16_) -> u32_;
+}
+extern "C" {
+    pub fn GetItemStatus2Mask(itemId: u16_) -> u32_;
+}
+pub const ENUM_TM_START_: _bindgen_ty_13 = 581;
+pub const ITEM_TM_FOCUS_PUNCH: _bindgen_ty_13 = 582;
+pub const ITEM_TM_DRAGON_CLAW: _bindgen_ty_13 = 583;
+pub const ITEM_TM_WATER_PULSE: _bindgen_ty_13 = 584;
+pub const ITEM_TM_CALM_MIND: _bindgen_ty_13 = 585;
+pub const ITEM_TM_ROAR: _bindgen_ty_13 = 586;
+pub const ITEM_TM_TOXIC: _bindgen_ty_13 = 587;
+pub const ITEM_TM_HAIL: _bindgen_ty_13 = 588;
+pub const ITEM_TM_BULK_UP: _bindgen_ty_13 = 589;
+pub const ITEM_TM_BULLET_SEED: _bindgen_ty_13 = 590;
+pub const ITEM_TM_HIDDEN_POWER: _bindgen_ty_13 = 591;
+pub const ITEM_TM_SUNNY_DAY: _bindgen_ty_13 = 592;
+pub const ITEM_TM_TAUNT: _bindgen_ty_13 = 593;
+pub const ITEM_TM_ICE_BEAM: _bindgen_ty_13 = 594;
+pub const ITEM_TM_BLIZZARD: _bindgen_ty_13 = 595;
+pub const ITEM_TM_HYPER_BEAM: _bindgen_ty_13 = 596;
+pub const ITEM_TM_LIGHT_SCREEN: _bindgen_ty_13 = 597;
+pub const ITEM_TM_PROTECT: _bindgen_ty_13 = 598;
+pub const ITEM_TM_RAIN_DANCE: _bindgen_ty_13 = 599;
+pub const ITEM_TM_GIGA_DRAIN: _bindgen_ty_13 = 600;
+pub const ITEM_TM_SAFEGUARD: _bindgen_ty_13 = 601;
+pub const ITEM_TM_FRUSTRATION: _bindgen_ty_13 = 602;
+pub const ITEM_TM_SOLAR_BEAM: _bindgen_ty_13 = 603;
+pub const ITEM_TM_IRON_TAIL: _bindgen_ty_13 = 604;
+pub const ITEM_TM_THUNDERBOLT: _bindgen_ty_13 = 605;
+pub const ITEM_TM_THUNDER: _bindgen_ty_13 = 606;
+pub const ITEM_TM_EARTHQUAKE: _bindgen_ty_13 = 607;
+pub const ITEM_TM_RETURN: _bindgen_ty_13 = 608;
+pub const ITEM_TM_DIG: _bindgen_ty_13 = 609;
+pub const ITEM_TM_PSYCHIC: _bindgen_ty_13 = 610;
+pub const ITEM_TM_SHADOW_BALL: _bindgen_ty_13 = 611;
+pub const ITEM_TM_BRICK_BREAK: _bindgen_ty_13 = 612;
+pub const ITEM_TM_DOUBLE_TEAM: _bindgen_ty_13 = 613;
+pub const ITEM_TM_REFLECT: _bindgen_ty_13 = 614;
+pub const ITEM_TM_SHOCK_WAVE: _bindgen_ty_13 = 615;
+pub const ITEM_TM_FLAMETHROWER: _bindgen_ty_13 = 616;
+pub const ITEM_TM_SLUDGE_BOMB: _bindgen_ty_13 = 617;
+pub const ITEM_TM_SANDSTORM: _bindgen_ty_13 = 618;
+pub const ITEM_TM_FIRE_BLAST: _bindgen_ty_13 = 619;
+pub const ITEM_TM_ROCK_TOMB: _bindgen_ty_13 = 620;
+pub const ITEM_TM_AERIAL_ACE: _bindgen_ty_13 = 621;
+pub const ITEM_TM_TORMENT: _bindgen_ty_13 = 622;
+pub const ITEM_TM_FACADE: _bindgen_ty_13 = 623;
+pub const ITEM_TM_SECRET_POWER: _bindgen_ty_13 = 624;
+pub const ITEM_TM_REST: _bindgen_ty_13 = 625;
+pub const ITEM_TM_ATTRACT: _bindgen_ty_13 = 626;
+pub const ITEM_TM_THIEF: _bindgen_ty_13 = 627;
+pub const ITEM_TM_STEEL_WING: _bindgen_ty_13 = 628;
+pub const ITEM_TM_SKILL_SWAP: _bindgen_ty_13 = 629;
+pub const ITEM_TM_SNATCH: _bindgen_ty_13 = 630;
+pub const ITEM_TM_OVERHEAT: _bindgen_ty_13 = 631;
+pub const ENUM_HM_START_: _bindgen_ty_13 = 681;
+pub const ITEM_HM_CUT: _bindgen_ty_13 = 682;
+pub const ITEM_HM_FLY: _bindgen_ty_13 = 683;
+pub const ITEM_HM_SURF: _bindgen_ty_13 = 684;
+pub const ITEM_HM_STRENGTH: _bindgen_ty_13 = 685;
+pub const ITEM_HM_FLASH: _bindgen_ty_13 = 686;
+pub const ITEM_HM_ROCK_SMASH: _bindgen_ty_13 = 687;
+pub const ITEM_HM_WATERFALL: _bindgen_ty_13 = 688;
+pub const ITEM_HM_DIVE: _bindgen_ty_13 = 689;
+pub type _bindgen_ty_13 = ::std::os::raw::c_int;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct __crt_locale_data {

@@ -1,0 +1,791 @@
+{
+  "Venusaur": [
+    "Venusaur",
+    "Venusaur-Mega"
+  ],
+  "Charizard": [
+    "Charizard",
+    "Charizard-Mega-X",
+    "Charizard-Mega-Y"
+  ],
+  "Blastoise": [
+    "Blastoise",
+    "Blastoise-Mega"
+  ],
+  "Beedrill": [
+    "Beedrill",
+    "Beedrill-Mega"
+  ],
+  "Pidgeot": [
+    "Pidgeot",
+    "Pidgeot-Mega"
+  ],
+  "Rattata": [
+    "Rattata",
+    "Rattata-Alola"
+  ],
+  "Raticate": [
+    "Raticate",
+    "Raticate-Alola",
+    "Raticate-Alola-Totem"
+  ],
+  "Pikachu": [
+    "Pikachu",
+    "Pikachu-Original",
+    "Pikachu-Hoenn",
+    "Pikachu-Sinnoh",
+    "Pikachu-Unova",
+    "Pikachu-Kalos",
+    "Pikachu-Alola",
+    "Pikachu-Partner",
+    "Pikachu-World",
+    "Pikachu-Rock-Star",
+    "Pikachu-Belle",
+    "Pikachu-Pop-Star",
+    "Pikachu-PhD",
+    "Pikachu-Libre",
+    "Pikachu-Cosplay"
+  ],
+  "Raichu": [
+    "Raichu",
+    "Raichu-Alola"
+  ],
+  "Sandshrew": [
+    "Sandshrew",
+    "Sandshrew-Alola"
+  ],
+  "Sandslash": [
+    "Sandslash",
+    "Sandslash-Alola"
+  ],
+  "Vulpix": [
+    "Vulpix",
+    "Vulpix-Alola"
+  ],
+  "Ninetales": [
+    "Ninetales",
+    "Ninetales-Alola"
+  ],
+  "Diglett": [
+    "Diglett",
+    "Diglett-Alola"
+  ],
+  "Dugtrio": [
+    "Dugtrio",
+    "Dugtrio-Alola"
+  ],
+  "Meowth": [
+    "Meowth",
+    "Meowth-Alola",
+    "Meowth-Galar"
+  ],
+  "Persian": [
+    "Persian",
+    "Persian-Alola"
+  ],
+  "Growlithe": [
+    "Growlithe",
+    "Growlithe-Hisui"
+  ],
+  "Arcanine": [
+    "Arcanine",
+    "Arcanine-Hisui"
+  ],
+  "Alakazam": [
+    "Alakazam",
+    "Alakazam-Mega"
+  ],
+  "Geodude": [
+    "Geodude",
+    "Geodude-Alola"
+  ],
+  "Graveler": [
+    "Graveler",
+    "Graveler-Alola"
+  ],
+  "Golem": [
+    "Golem",
+    "Golem-Alola"
+  ],
+  "Ponyta": [
+    "Ponyta",
+    "Ponyta-Galar"
+  ],
+  "Rapidash": [
+    "Rapidash",
+    "Rapidash-Galar"
+  ],
+  "Slowpoke": [
+    "Slowpoke",
+    "Slowpoke-Galar"
+  ],
+  "Slowbro": [
+    "Slowbro",
+    "Slowbro-Mega",
+    "Slowbro-Galar"
+  ],
+  "Farfetch'd": [
+    "Farfetch'd",
+    "Farfetch'd-Galar"
+  ],
+  "Grimer": [
+    "Grimer",
+    "Grimer-Alola"
+  ],
+  "Muk": [
+    "Muk",
+    "Muk-Alola"
+  ],
+  "Gengar": [
+    "Gengar",
+    "Gengar-Mega"
+  ],
+  "Voltorb": [
+    "Voltorb",
+    "Voltorb-Hisui"
+  ],
+  "Electrode": [
+    "Electrode",
+    "Electrode-Hisui"
+  ],
+  "Exeggutor": [
+    "Exeggutor",
+    "Exeggutor-Alola"
+  ],
+  "Marowak": [
+    "Marowak",
+    "Marowak-Alola",
+    "Marowak-Alola-Totem"
+  ],
+  "Weezing": [
+    "Weezing",
+    "Weezing-Galar"
+  ],
+  "Kangaskhan": [
+    "Kangaskhan",
+    "Kangaskhan-Mega"
+  ],
+  "Mr. Mime": [
+    "Mr. Mime",
+    "Mr. Mime-Galar"
+  ],
+  "Pinsir": [
+    "Pinsir",
+    "Pinsir-Mega"
+  ],
+  "Tauros": [
+    "Tauros",
+    "Tauros-Paldea-Combat",
+    "Tauros-Paldea-Blaze",
+    "Tauros-Paldea-Aqua"
+  ],
+  "Gyarados": [
+    "Gyarados",
+    "Gyarados-Mega"
+  ],
+  "Aerodactyl": [
+    "Aerodactyl",
+    "Aerodactyl-Mega"
+  ],
+  "Articuno": [
+    "Articuno",
+    "Articuno-Galar"
+  ],
+  "Zapdos": [
+    "Zapdos",
+    "Zapdos-Galar"
+  ],
+  "Moltres": [
+    "Moltres",
+    "Moltres-Galar"
+  ],
+  "Mewtwo": [
+    "Mewtwo",
+    "Mewtwo-Mega-X",
+    "Mewtwo-Mega-Y"
+  ],
+  "Typhlosion": [
+    "Typhlosion",
+    "Typhlosion-Hisui"
+  ],
+  "Pichu": [
+    "Pichu",
+    "Pichu-Spiky-eared"
+  ],
+  "Ampharos": [
+    "Ampharos",
+    "Ampharos-Mega"
+  ],
+  "Wooper": [
+    "Wooper",
+    "Wooper-Paldea"
+  ],
+  "Slowking": [
+    "Slowking",
+    "Slowking-Galar"
+  ],
+  "Steelix": [
+    "Steelix",
+    "Steelix-Mega"
+  ],
+  "Qwilfish": [
+    "Qwilfish",
+    "Qwilfish-Hisui"
+  ],
+  "Scizor": [
+    "Scizor",
+    "Scizor-Mega"
+  ],
+  "Heracross": [
+    "Heracross",
+    "Heracross-Mega"
+  ],
+  "Sneasel": [
+    "Sneasel",
+    "Sneasel-Hisui"
+  ],
+  "Corsola": [
+    "Corsola",
+    "Corsola-Galar"
+  ],
+  "Houndoom": [
+    "Houndoom",
+    "Houndoom-Mega"
+  ],
+  "Tyranitar": [
+    "Tyranitar",
+    "Tyranitar-Mega"
+  ],
+  "Sceptile": [
+    "Sceptile",
+    "Sceptile-Mega"
+  ],
+  "Blaziken": [
+    "Blaziken",
+    "Blaziken-Mega"
+  ],
+  "Swampert": [
+    "Swampert",
+    "Swampert-Mega"
+  ],
+  "Zigzagoon": [
+    "Zigzagoon",
+    "Zigzagoon-Galar"
+  ],
+  "Linoone": [
+    "Linoone",
+    "Linoone-Galar"
+  ],
+  "Gardevoir": [
+    "Gardevoir",
+    "Gardevoir-Mega"
+  ],
+  "Sableye": [
+    "Sableye",
+    "Sableye-Mega"
+  ],
+  "Mawile": [
+    "Mawile",
+    "Mawile-Mega"
+  ],
+  "Aggron": [
+    "Aggron",
+    "Aggron-Mega"
+  ],
+  "Medicham": [
+    "Medicham",
+    "Medicham-Mega"
+  ],
+  "Manectric": [
+    "Manectric",
+    "Manectric-Mega"
+  ],
+  "Sharpedo": [
+    "Sharpedo",
+    "Sharpedo-Mega"
+  ],
+  "Camerupt": [
+    "Camerupt",
+    "Camerupt-Mega"
+  ],
+  "Altaria": [
+    "Altaria",
+    "Altaria-Mega"
+  ],
+  "Castform": [
+    "Castform",
+    "Castform-Sunny",
+    "Castform-Rainy",
+    "Castform-Snowy"
+  ],
+  "Banette": [
+    "Banette",
+    "Banette-Mega"
+  ],
+  "Absol": [
+    "Absol",
+    "Absol-Mega"
+  ],
+  "Glalie": [
+    "Glalie",
+    "Glalie-Mega"
+  ],
+  "Salamence": [
+    "Salamence",
+    "Salamence-Mega"
+  ],
+  "Metagross": [
+    "Metagross",
+    "Metagross-Mega"
+  ],
+  "Latias": [
+    "Latias",
+    "Latias-Mega"
+  ],
+  "Latios": [
+    "Latios",
+    "Latios-Mega"
+  ],
+  "Kyogre": [
+    "Kyogre",
+    "Kyogre-Primal"
+  ],
+  "Groudon": [
+    "Groudon",
+    "Groudon-Primal"
+  ],
+  "Rayquaza": [
+    "Rayquaza",
+    "Rayquaza-Mega"
+  ],
+  "Deoxys": [
+    "Deoxys",
+    "Deoxys-Attack",
+    "Deoxys-Defense",
+    "Deoxys-Speed"
+  ],
+  "Wormadam": [
+    "Wormadam",
+    "Wormadam-Sandy",
+    "Wormadam-Trash"
+  ],
+  "Cherrim": [
+    "Cherrim",
+    "Cherrim-Sunshine"
+  ],
+  "Lopunny": [
+    "Lopunny",
+    "Lopunny-Mega"
+  ],
+  "Garchomp": [
+    "Garchomp",
+    "Garchomp-Mega"
+  ],
+  "Lucario": [
+    "Lucario",
+    "Lucario-Mega"
+  ],
+  "Abomasnow": [
+    "Abomasnow",
+    "Abomasnow-Mega"
+  ],
+  "Gallade": [
+    "Gallade",
+    "Gallade-Mega"
+  ],
+  "Rotom": [
+    "Rotom",
+    "Rotom-Heat",
+    "Rotom-Wash",
+    "Rotom-Frost",
+    "Rotom-Fan",
+    "Rotom-Mow"
+  ],
+  "Dialga": [
+    "Dialga",
+    "Dialga-Origin"
+  ],
+  "Palkia": [
+    "Palkia",
+    "Palkia-Origin"
+  ],
+  "Giratina": [
+    "Giratina",
+    "Giratina-Origin"
+  ],
+  "Shaymin": [
+    "Shaymin",
+    "Shaymin-Sky"
+  ],
+  "Arceus": [
+    "Arceus",
+    "Arceus-Fighting",
+    "Arceus-Flying",
+    "Arceus-Poison",
+    "Arceus-Ground",
+    "Arceus-Rock",
+    "Arceus-Bug",
+    "Arceus-Ghost",
+    "Arceus-Steel",
+    "Arceus-Fire",
+    "Arceus-Water",
+    "Arceus-Grass",
+    "Arceus-Electric",
+    "Arceus-Psychic",
+    "Arceus-Ice",
+    "Arceus-Dragon",
+    "Arceus-Dark",
+    "Arceus-Fairy"
+  ],
+  "Samurott": [
+    "Samurott",
+    "Samurott-Hisui"
+  ],
+  "Audino": [
+    "Audino",
+    "Audino-Mega"
+  ],
+  "Lilligant": [
+    "Lilligant",
+    "Lilligant-Hisui"
+  ],
+  "Basculin": [
+    "Basculin",
+    "Basculin-Blue-Striped",
+    "Basculin-White-Striped"
+  ],
+  "Darumaka": [
+    "Darumaka",
+    "Darumaka-Galar"
+  ],
+  "Darmanitan": [
+    "Darmanitan",
+    "Darmanitan-Zen",
+    "Darmanitan-Galar",
+    "Darmanitan-Galar-Zen"
+  ],
+  "Yamask": [
+    "Yamask",
+    "Yamask-Galar"
+  ],
+  "Zorua": [
+    "Zorua",
+    "Zorua-Hisui"
+  ],
+  "Zoroark": [
+    "Zoroark",
+    "Zoroark-Hisui"
+  ],
+  "Stunfisk": [
+    "Stunfisk",
+    "Stunfisk-Galar"
+  ],
+  "Braviary": [
+    "Braviary",
+    "Braviary-Hisui"
+  ],
+  "Tornadus": [
+    "Tornadus",
+    "Tornadus-Therian"
+  ],
+  "Thundurus": [
+    "Thundurus",
+    "Thundurus-Therian"
+  ],
+  "Landorus": [
+    "Landorus",
+    "Landorus-Therian"
+  ],
+  "Kyurem": [
+    "Kyurem",
+    "Kyurem-White",
+    "Kyurem-Black"
+  ],
+  "Keldeo": [
+    "Keldeo",
+    "Keldeo-Resolute"
+  ],
+  "Meloetta": [
+    "Meloetta",
+    "Meloetta-Pirouette"
+  ],
+  "Genesect": [
+    "Genesect",
+    "Genesect-Douse",
+    "Genesect-Shock",
+    "Genesect-Burn",
+    "Genesect-Chill"
+  ],
+  "Greninja": [
+    "Greninja",
+    "Greninja-Bond",
+    "Greninja-Ash"
+  ],
+  "Vivillon": [
+    "Vivillon",
+    "Vivillon-Fancy",
+    "Vivillon-Pokeball"
+  ],
+  "Floette": [
+    "Floette",
+    "Floette-Eternal"
+  ],
+  "Meowstic": [
+    "Meowstic",
+    "Meowstic-F"
+  ],
+  "Aegislash": [
+    "Aegislash",
+    "Aegislash-Blade"
+  ],
+  "Sliggoo": [
+    "Sliggoo",
+    "Sliggoo-Hisui"
+  ],
+  "Goodra": [
+    "Goodra",
+    "Goodra-Hisui"
+  ],
+  "Pumpkaboo": [
+    "Pumpkaboo",
+    "Pumpkaboo-Small",
+    "Pumpkaboo-Large",
+    "Pumpkaboo-Super"
+  ],
+  "Gourgeist": [
+    "Gourgeist",
+    "Gourgeist-Small",
+    "Gourgeist-Large",
+    "Gourgeist-Super"
+  ],
+  "Avalugg": [
+    "Avalugg",
+    "Avalugg-Hisui"
+  ],
+  "Zygarde": [
+    "Zygarde",
+    "Zygarde-10%",
+    "Zygarde-10%",
+    "Zygarde",
+    "Zygarde-Complete"
+  ],
+  "Diancie": [
+    "Diancie",
+    "Diancie-Mega"
+  ],
+  "Hoopa": [
+    "Hoopa",
+    "Hoopa-Unbound"
+  ],
+  "Decidueye": [
+    "Decidueye",
+    "Decidueye-Hisui"
+  ],
+  "Gumshoos": [
+    "Gumshoos",
+    "Gumshoos-Totem"
+  ],
+  "Vikavolt": [
+    "Vikavolt",
+    "Vikavolt-Totem"
+  ],
+  "Oricorio": [
+    "Oricorio",
+    "Oricorio-Pom-Pom",
+    "Oricorio-Pa'u",
+    "Oricorio-Sensu"
+  ],
+  "Ribombee": [
+    "Ribombee",
+    "Ribombee-Totem"
+  ],
+  "Rockruff": [
+    "Rockruff",
+    "Rockruff"
+  ],
+  "Lycanroc": [
+    "Lycanroc",
+    "Lycanroc-Midnight",
+    "Lycanroc-Dusk"
+  ],
+  "Wishiwashi": [
+    "Wishiwashi",
+    "Wishiwashi-School"
+  ],
+  "Araquanid": [
+    "Araquanid",
+    "Araquanid-Totem"
+  ],
+  "Lurantis": [
+    "Lurantis",
+    "Lurantis-Totem"
+  ],
+  "Salazzle": [
+    "Salazzle",
+    "Salazzle-Totem"
+  ],
+  "Silvally": [
+    "Silvally",
+    "Silvally-Fighting",
+    "Silvally-Flying",
+    "Silvally-Poison",
+    "Silvally-Ground",
+    "Silvally-Rock",
+    "Silvally-Bug",
+    "Silvally-Ghost",
+    "Silvally-Steel",
+    "Silvally-Fire",
+    "Silvally-Water",
+    "Silvally-Grass",
+    "Silvally-Electric",
+    "Silvally-Psychic",
+    "Silvally-Ice",
+    "Silvally-Dragon",
+    "Silvally-Dark",
+    "Silvally-Fairy"
+  ],
+  "Minior-Meteor": [
+    "Minior-Meteor",
+    "Minior-Meteor",
+    "Minior-Meteor",
+    "Minior-Meteor",
+    "Minior-Meteor",
+    "Minior-Meteor",
+    "Minior-Meteor",
+    "Minior"
+  ],
+  "Togedemaru": [
+    "Togedemaru",
+    "Togedemaru-Totem"
+  ],
+  "Mimikyu": [
+    "Mimikyu",
+    "Mimikyu-Busted",
+    "Mimikyu-Totem",
+    "Mimikyu-Busted-Totem"
+  ],
+  "Kommo-o": [
+    "Kommo-o",
+    "Kommo-o-Totem"
+  ],
+  "Necrozma": [
+    "Necrozma",
+    "Necrozma-Dusk-Mane",
+    "Necrozma-Dawn-Wings",
+    "Necrozma-Ultra"
+  ],
+  "Magearna": [
+    "Magearna",
+    "Magearna-Original"
+  ],
+  "Cramorant": [
+    "Cramorant",
+    "Cramorant-Gulping",
+    "Cramorant-Gorging"
+  ],
+  "Toxtricity": [
+    "Toxtricity",
+    "Toxtricity-Low-Key"
+  ],
+  "Sinistea": [
+    "Sinistea",
+    "Sinistea-Antique"
+  ],
+  "Polteageist": [
+    "Polteageist",
+    "Polteageist-Antique"
+  ],
+  "Eiscue": [
+    "Eiscue",
+    "Eiscue-Noice"
+  ],
+  "Indeedee": [
+    "Indeedee",
+    "Indeedee-F"
+  ],
+  "Morpeko": [
+    "Morpeko",
+    "Morpeko-Hangry"
+  ],
+  "Zacian": [
+    "Zacian",
+    "Zacian-Crowned"
+  ],
+  "Zamazenta": [
+    "Zamazenta",
+    "Zamazenta-Crowned"
+  ],
+  "Eternatus": [
+    "Eternatus",
+    "Eternatus-Eternamax"
+  ],
+  "Urshifu": [
+    "Urshifu",
+    "Urshifu-Rapid-Strike"
+  ],
+  "Zarude": [
+    "Zarude",
+    "Zarude-Dada"
+  ],
+  "Calyrex": [
+    "Calyrex",
+    "Calyrex-Ice",
+    "Calyrex-Shadow"
+  ],
+  "Ursaluna": [
+    "Ursaluna",
+    "Ursaluna-Bloodmoon"
+  ],
+  "Basculegion": [
+    "Basculegion",
+    "Basculegion-F"
+  ],
+  "Enamorus": [
+    "Enamorus",
+    "Enamorus-Therian"
+  ],
+  "Oinkologne": [
+    "Oinkologne",
+    "Oinkologne-F"
+  ],
+  "Maushold": [
+    "Maushold",
+    "Maushold-Four"
+  ],
+  "Squawkabilly": [
+    "Squawkabilly",
+    "Squawkabilly-Blue",
+    "Squawkabilly-Yellow",
+    "Squawkabilly-White"
+  ],
+  "Palafin": [
+    "Palafin",
+    "Palafin-Hero"
+  ],
+  "Dudunsparce": [
+    "Dudunsparce",
+    "Dudunsparce-Three-Segment"
+  ],
+  "Gimmighoul": [
+    "Gimmighoul",
+    "Gimmighoul-Roaming"
+  ],
+  "Poltchageist": [
+    "Poltchageist",
+    "Poltchageist-Artisan"
+  ],
+  "Sinistcha": [
+    "Sinistcha",
+    "Sinistcha-Masterpiece"
+  ],
+  "Ogerpon": [
+    "Ogerpon",
+    "Ogerpon-Wellspring",
+    "Ogerpon-Hearthflame",
+    "Ogerpon-Cornerstone",
+    "Ogerpon-Teal-Tera",
+    "Ogerpon-Wellspring-Tera",
+    "Ogerpon-Hearthflame-Tera",
+    "Ogerpon-Cornerstone-Tera"
+  ]
+}
