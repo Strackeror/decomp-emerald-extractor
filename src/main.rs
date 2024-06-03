@@ -112,25 +112,52 @@ fn build_poke_abilities(
     Ok(pk_abilities)
 }
 
-fn get_override_name(index: usize, info: RomInfo) -> Option<String> {
+enum Override {
+    Keep,
+    Drop,
+    Renamed(String),
+}
+
+fn get_override_name(index: usize, info: RomInfo) -> Override {
     let species = &info.species[index];
 
-    let name = species.speciesName.to_string_c().ok()?;
-    let formes = get_species_formes(species)?;
-    let forme_index = formes.iter().position(|fid| *fid as usize == index)?;
-    Some(info.forme_list.0.get(&name)?.get(forme_index)?.clone())
+    let name = match species.speciesName.to_string_c() {
+        Err(_) => return Override::Drop,
+        Ok(n) => n,
+    };
+
+    let formes = match get_species_formes(species) {
+        None => return Override::Keep,
+        Some(f) => f,
+    };
+
+    let forme_index = match formes.iter().position(|fid| *fid as usize == index) {
+        None => return Override::Drop,
+        Some(f) => f,
+    };
+
+    let entry = match info.override_list.0.get(&name) {
+        None if forme_index == 0 => return Override::Keep,
+        None => return Override::Drop,
+        Some(e) => e,
+    };
+
+    match entry.get(&forme_index) {
+        None => Override::Drop,
+        Some(name) => Override::Renamed(name.clone()),
+    }
 }
 
 fn get_species_name(index: usize, info: RomInfo) -> Result<String> {
-    if let Some(n) = get_override_name(index, info) {
+    if let Override::Renamed(n) = get_override_name(index, info) {
         return Ok(n);
     }
 
     let species = &info.species[index];
-
     let name = species.speciesName.to_string_c()?;
     match get_species_formes(species) {
         None => Ok(name),
+        Some(list) if list[0] as usize == index => Ok(name),
         Some(_) => Ok(format!("{name}-{index}-UNKNOWN")),
     }
 }
@@ -141,10 +168,7 @@ fn poke_is_valid(index: usize, info: RomInfo) -> bool {
     if species.natDexNum == 0 {
         return false;
     }
-    match get_species_formes(species) {
-        None => true,
-        Some(_) => get_override_name(index, info).is_some(),
-    }
+    !matches!(get_override_name(index, info), Override::Drop)
 }
 
 fn build_evos(species: &SpeciesInfo, info: RomInfo) -> Result<Option<Vec<PokemonEvolution>>> {

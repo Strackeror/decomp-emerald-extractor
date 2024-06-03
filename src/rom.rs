@@ -239,12 +239,12 @@ fn get_item_info() -> &'static [Item] {
 }
 
 #[derive(Deserialize)]
-pub struct FormeList(pub BTreeMap<String, Vec<String>>);
-const FORMES_LIST_STR: &str = include_str!("formes.json");
-static FORMES_LIST: OnceLock<FormeList> = OnceLock::new();
+pub struct OverrideList(pub BTreeMap<String, BTreeMap<usize, String>>);
+const OVERRIDE_LIST_STR: &str = include_str!("overrides.json");
+static OVERRIDE_LIST: OnceLock<OverrideList> = OnceLock::new();
 
-fn get_formes_list() -> &'static FormeList {
-    FORMES_LIST.get_or_init(|| serde_json::from_str(FORMES_LIST_STR).unwrap())
+fn get_override_list() -> &'static OverrideList {
+    OVERRIDE_LIST.get_or_init(|| serde_json::from_str(OVERRIDE_LIST_STR).unwrap())
 }
 
 #[derive(Clone, Copy)]
@@ -253,7 +253,7 @@ pub struct RomInfo {
     pub items: &'static [Item],
     pub moves: &'static [MoveInfo],
     pub species: &'static [SpeciesInfo],
-    pub forme_list: &'static FormeList,
+    pub override_list: &'static OverrideList,
 }
 
 pub fn get_info() -> RomInfo {
@@ -262,6 +262,6 @@ pub fn get_info() -> RomInfo {
         items: get_item_info(),
         moves: get_moves_info(),
         species: get_species_info(),
-        forme_list: get_formes_list(),
+        override_list: get_override_list(),
     }
 }
