@@ -74,9 +74,12 @@ const union AnimCmd sAnim_GeneralFrame0[] = { };
 #include "constants/item_effects.h"
 #include "constants/hold_effects.h"
 
-#include "data/pokemon/item_effects.h"
-#include "data/items.h"
-
+void ItemUseOutOfBattle_IncreaseIV(u8){};
+void ItemUseOutOfBattle_InfiniteRepel(u8){};
+void ItemUseOutOfBattle_TmCase(u8){};
+void ItemUseOutOfBattle_PokeRadar(u8){};
+void ItemUseOutOfBattle_MedKit(u8){};
+void ItemUseOutOfBattle_PokeVial(u8){};
 
 void ItemUseOutOfBattle_Mail(u8){};
 void ItemUseOutOfBattle_Bike(u8){};
@@ -115,3 +118,14 @@ void ItemUseOutOfBattle_Fusion(u8){};
 void ItemUseOutOfBattle_Honey(u8){};
 void ItemUseOutOfBattle_CannotUse(u8){};
 void ItemUseOutOfBattle_ExpShare(u8){};
+
+#include "data/pokemon/item_effects.h"
+#include "data/items.h"
+
+
+///
+/// Areas
+///
+
+#include "data/region_map/region_map_entries.h"
+#include "data/wild_encounters.h"

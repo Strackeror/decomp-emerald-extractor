@@ -5,18 +5,27 @@ use anyhow::bail;
 use anyhow::Context;
 use anyhow::Result;
 use indexmap::IndexMap;
+use json::Area;
 use json::Database;
+use json::Encounter;
 use json::Learnset;
 use json::LearnsetEntry;
+use json::Location;
 use json::Move;
 use json::Pokemon;
 use json::PokemonEvolution;
 use json::Stats;
 use pokeemerald_binds::Ability;
+use pokeemerald_binds::WildPokemon;
+use rom::get_encounter_area_name;
+use rom::get_fishing_encounters;
 use rom::get_info;
+use rom::get_land_encounters;
+use rom::get_rock_encounters;
 use rom::get_species_formes;
 use rom::get_species_levelup_moves;
 use rom::get_species_teachable_moves;
+use rom::get_water_encounters;
 use rom::EvoMethod;
 use rom::Evolution;
 use rom::MoveCategory;
@@ -71,8 +80,8 @@ fn build_ability(index: u32, ability: &rom::Ability) -> Result<json::Ability> {
     Ok(json::Ability {
         num: index,
         name: ability.name.to_string_c()?,
-        desc: ability.description.to_string_c()?,
-        shortDesc: ability.description.to_string_c()?,
+        desc: ability.description.to_string_c().unwrap_or("".to_string()),
+        shortDesc: ability.description.to_string_c().unwrap_or("".to_string()),
     })
 }
 fn build_poke_abilities(
@@ -284,7 +293,6 @@ fn build_move(move_index: usize, info: RomInfo) -> Result<Move> {
 fn build_learnset(species_index: usize, info: RomInfo) -> Result<Learnset> {
     let species = &info.species[species_index];
 
-    let mut moves = Vec::new();
     let level_up_moves: Vec<LearnsetEntry> = get_species_levelup_moves(species)
         .unwrap_or(&[])
         .iter()
@@ -309,9 +317,50 @@ fn build_learnset(species_index: usize, info: RomInfo) -> Result<Learnset> {
         })
         .collect::<Result<_>>()?;
 
+    let mut moves = Vec::new();
     moves.extend(level_up_moves);
     moves.extend(teachable_moves);
     Ok(Learnset(moves))
+}
+
+fn build_area(index: usize, info: RomInfo) -> Result<Area> {
+    let wild_info = &info.encounters[index];
+
+    fn build_location(name: &str, encounters: &[WildPokemon], info: RomInfo) -> Result<Location> {
+        Ok(Location {
+            location: name.to_string(),
+            encounters: encounters
+                .iter()
+                .map(|e| {
+                    Ok(Encounter {
+                        species: get_species_name(e.species as usize, info)?,
+                        chance: None,
+                        level: Some((e.minLevel as _, e.maxLevel as _)),
+                    })
+                })
+                .collect::<Result<_>>()?,
+        })
+    }
+    let land = get_land_encounters(wild_info).map(|i| build_location("land", i, info));
+    let water = get_water_encounters(wild_info).map(|i| build_location("water", i, info));
+    let rock = get_rock_encounters(wild_info).map(|i| build_location("rock", i, info));
+    let fishing = get_fishing_encounters(wild_info)
+        .iter()
+        .flat_map(|(a, b, c)| [a, b, c])
+        .map(|i| build_location("fishing", i, info))
+        .collect::<Vec<_>>();
+
+    let all = land
+        .into_iter()
+        .chain(water.into_iter())
+        .chain(rock.into_iter())
+        .chain(fishing.into_iter())
+        .collect::<Result<Vec<_>>>()?;
+
+    Ok(Area {
+        name: get_encounter_area_name(index).to_string(),
+        locations: all,
+    })
 }
 
 fn main() -> Result<()> {
@@ -347,10 +396,17 @@ fn main() -> Result<()> {
         .species
         .iter()
         .zip(0..)
-        .skip(1)
+        .filter(|(_, i)| poke_is_valid(*i, info))
         .map(|(_, index)| {
             let learnset = build_learnset(index, info)?;
             Ok((idify(&get_species_name(index, info)?), learnset))
+        })
+        .collect::<Result<_>>()?;
+
+    let areas = (0..info.encounters.len())
+        .map(|i| {
+            let area = build_area(i, info)?;
+            Ok((idify(&area.name), area))
         })
         .collect::<Result<_>>()?;
 
@@ -361,6 +417,7 @@ fn main() -> Result<()> {
             pokemons,
             moves,
             learnsets,
+            areas,
         },
     )?;
     Ok(())

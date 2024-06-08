@@ -6,6 +6,10 @@ use anyhow::Context;
 use anyhow::Result;
 use paste::paste;
 use pokeemerald_binds::Item;
+use pokeemerald_binds::RegionMap;
+use pokeemerald_binds::WildPokemon;
+use pokeemerald_binds::WildPokemonHeader;
+use pokeemerald_binds::WildPokemonInfo;
 use serde::Deserialize;
 
 pub use pokeemerald_binds::Ability;
@@ -190,6 +194,34 @@ pub fn get_species_egg_moves(species: &SpeciesInfo) -> Option<&[u16]> {
     todo!()
 }
 
+unsafe fn get_encounters<'a>(info: *const WildPokemonInfo, count: usize) -> Option<&'a [WildPokemon]> {
+    if info.is_null() {
+        return None;
+    }
+
+    Some(std::slice::from_raw_parts((*info).wildPokemon, count))
+}
+
+pub fn get_land_encounters(wild: &WildPokemonHeader) -> Option<&[WildPokemon]> {
+    unsafe { get_encounters(wild.landMonsInfo, 12) }
+}
+
+pub fn get_water_encounters(wild: &WildPokemonHeader) -> Option<&[WildPokemon]> {
+    unsafe { get_encounters(wild.waterMonsInfo, 5) }
+}
+
+pub fn get_rock_encounters(wild: &WildPokemonHeader) -> Option<&[WildPokemon]> {
+    unsafe { get_encounters(wild.rockSmashMonsInfo, 5) }
+}
+
+pub fn get_fishing_encounters(wild: &WildPokemonHeader) -> Option<(&[WildPokemon], &[WildPokemon], &[WildPokemon])> {
+    let all_fishing = unsafe { get_encounters(wild.fishingMonsInfo, 10) }?;
+    
+    let (old_rod, rest) = all_fishing.split_at(2);
+    let (good_rod, super_rod) = rest.split_at(3);
+    Some((old_rod, good_rod, super_rod))
+}
+
 pub fn get_types(species: &SpeciesInfo) -> Result<Vec<String>> {
     let mut ret: Vec<Type> = species
         .types
@@ -238,6 +270,19 @@ fn get_item_info() -> &'static [Item] {
     unsafe { std::slice::from_raw_parts(gItemsInfo.as_ptr(), COUNT) }
 }
 
+fn get_encounter_info() -> &'static [WildPokemonHeader] {
+    use pokeemerald_binds::gWildMonHeaders;
+
+    unsafe { guarded_array_to_slice(gWildMonHeaders.as_ptr(), |h| (*h).mapGroup == 0xff) }
+}
+
+pub fn get_encounter_area_name(index: usize) -> &'static str {
+    const AREA_NAMES_JSON: &str = include_str!("areas.json");
+    static AREA_NAMES: OnceLock<Vec<String>> = OnceLock::new();
+
+    &AREA_NAMES.get_or_init(|| serde_json::from_str(AREA_NAMES_JSON).unwrap())[index]
+}
+
 #[derive(Deserialize)]
 pub struct OverrideList(pub BTreeMap<String, BTreeMap<usize, String>>);
 const OVERRIDE_LIST_STR: &str = include_str!("overrides.json");
@@ -253,6 +298,7 @@ pub struct RomInfo {
     pub items: &'static [Item],
     pub moves: &'static [MoveInfo],
     pub species: &'static [SpeciesInfo],
+    pub encounters: &'static [WildPokemonHeader],
     pub override_list: &'static OverrideList,
 }
 
@@ -262,6 +308,7 @@ pub fn get_info() -> RomInfo {
         items: get_item_info(),
         moves: get_moves_info(),
         species: get_species_info(),
+        encounters: get_encounter_info(),
         override_list: get_override_list(),
     }
 }

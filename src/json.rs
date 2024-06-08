@@ -178,18 +178,42 @@ pub struct Ability {
     pub shortDesc: String,
 }
 
+#[derive(Serialize)]
+#[allow(non_snake_case)]
+pub struct Encounter {
+    pub species: String,
+    pub chance: Option<f32>,
+    pub level: Option<(u32, u32)>
+}
+
+#[derive(Serialize)]
+#[allow(non_snake_case)]
+pub struct Location {
+    pub location: String,
+    pub encounters: Vec<Encounter>
+}
+
+#[derive(Serialize)]
+#[allow(non_snake_case)]
+pub struct Area {
+    pub name: String,
+    pub locations: Vec<Location>,
+}
+
 #[derive(Default)]
 pub struct Database {
     pub moves: IndexMap<String, Move>,
     pub abilities: IndexMap<String, Ability>,
     pub learnsets: IndexMap<String, Learnset>,
     pub pokemons: IndexMap<String, Pokemon>,
+    pub areas: IndexMap<String, Area>,
 }
 
 pub fn export(path: &Path, db: &Database) -> Result<()> {
     serde_json::to_writer_pretty(File::create(path.join("abilities.json"))?, &db.abilities)?;
     serde_json::to_writer_pretty(File::create(path.join("learnsets.json"))?, &db.learnsets)?;
     serde_json::to_writer_pretty(File::create(path.join("moves.json"))?, &db.moves)?;
+    serde_json::to_writer_pretty(File::create(path.join("areas.json"))?, &db.areas)?;
     serde_json::to_writer_pretty(File::create(path.join("pokedex.json"))?, &db.pokemons)?;
     Ok(())
 }
