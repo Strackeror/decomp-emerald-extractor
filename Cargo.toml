@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.86"
+convert_case = "0.6.0"
 indexmap = {version = "2.2.6", features = ["std", "serde"]}
 paste = "1.0.15"
 pokeemerald-binds = {path = "./pokeemerald-binds"}

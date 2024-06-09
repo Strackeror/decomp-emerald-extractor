@@ -6,12 +6,12 @@ use anyhow::Context;
 use anyhow::Result;
 use paste::paste;
 use pokeemerald_binds::Item;
-use pokeemerald_binds::RegionMap;
 use pokeemerald_binds::WildPokemon;
 use pokeemerald_binds::WildPokemonHeader;
 use pokeemerald_binds::WildPokemonInfo;
 use serde::Deserialize;
 
+pub use pokeemerald_binds::constants::MapGroups;
 pub use pokeemerald_binds::Ability;
 pub use pokeemerald_binds::Evolution;
 pub use pokeemerald_binds::LevelUpMove;
@@ -194,7 +194,10 @@ pub fn get_species_egg_moves(species: &SpeciesInfo) -> Option<&[u16]> {
     todo!()
 }
 
-unsafe fn get_encounters<'a>(info: *const WildPokemonInfo, count: usize) -> Option<&'a [WildPokemon]> {
+unsafe fn get_encounters<'a>(
+    info: *const WildPokemonInfo,
+    count: usize,
+) -> Option<&'a [WildPokemon]> {
     if info.is_null() {
         return None;
     }
@@ -214,9 +217,11 @@ pub fn get_rock_encounters(wild: &WildPokemonHeader) -> Option<&[WildPokemon]> {
     unsafe { get_encounters(wild.rockSmashMonsInfo, 5) }
 }
 
-pub fn get_fishing_encounters(wild: &WildPokemonHeader) -> Option<(&[WildPokemon], &[WildPokemon], &[WildPokemon])> {
+pub fn get_fishing_encounters(
+    wild: &WildPokemonHeader,
+) -> Option<(&[WildPokemon], &[WildPokemon], &[WildPokemon])> {
     let all_fishing = unsafe { get_encounters(wild.fishingMonsInfo, 10) }?;
-    
+
     let (old_rod, rest) = all_fishing.split_at(2);
     let (good_rod, super_rod) = rest.split_at(3);
     Some((old_rod, good_rod, super_rod))
@@ -276,11 +281,9 @@ fn get_encounter_info() -> &'static [WildPokemonHeader] {
     unsafe { guarded_array_to_slice(gWildMonHeaders.as_ptr(), |h| (*h).mapGroup == 0xff) }
 }
 
-pub fn get_encounter_area_name(index: usize) -> &'static str {
-    const AREA_NAMES_JSON: &str = include_str!("areas.json");
-    static AREA_NAMES: OnceLock<Vec<String>> = OnceLock::new();
-
-    &AREA_NAMES.get_or_init(|| serde_json::from_str(AREA_NAMES_JSON).unwrap())[index]
+pub fn get_encounter_area_name(group: u8, num: u8) -> Option<&'static str> {
+    let index = ((group as u32) << 8) + (num as u32);
+    MapGroups::from_int(index).map(MapGroups::to_string)
 }
 
 #[derive(Deserialize)]

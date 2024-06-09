@@ -4,6 +4,8 @@ use std::path::PathBuf;
 use anyhow::bail;
 use anyhow::Context;
 use anyhow::Result;
+use convert_case::Case;
+use convert_case::Casing;
 use indexmap::IndexMap;
 use json::Area;
 use json::Database;
@@ -327,18 +329,22 @@ fn build_area(index: usize, info: RomInfo) -> Result<Area> {
     let wild_info = &info.encounters[index];
 
     fn build_location(name: &str, encounters: &[WildPokemon], info: RomInfo) -> Result<Location> {
+        let mut encounters = encounters
+            .iter()
+            .map(|e| {
+                Ok(Encounter {
+                    species: get_species_name(e.species as usize, info)?,
+                    chance: None,
+                    level: Some((e.minLevel as _, e.maxLevel as _)),
+                })
+            })
+            .collect::<Result<Vec<_>>>()?;
+        encounters.sort_by(|a, b|a.species.cmp(&b.species));
+        encounters.dedup_by(|a, b|a.species == b.species);
+
         Ok(Location {
             location: name.to_string(),
-            encounters: encounters
-                .iter()
-                .map(|e| {
-                    Ok(Encounter {
-                        species: get_species_name(e.species as usize, info)?,
-                        chance: None,
-                        level: Some((e.minLevel as _, e.maxLevel as _)),
-                    })
-                })
-                .collect::<Result<_>>()?,
+            encounters,
         })
     }
     let land = get_land_encounters(wild_info).map(|i| build_location("land", i, info));
@@ -347,20 +353,21 @@ fn build_area(index: usize, info: RomInfo) -> Result<Area> {
     let fishing = get_fishing_encounters(wild_info)
         .iter()
         .flat_map(|(a, b, c)| [a, b, c])
-        .map(|i| build_location("fishing", i, info))
+        .zip(["oldRod", "goodRod", "superRod"])
+        .map(|(encounters, name)| build_location(name, encounters, info))
         .collect::<Vec<_>>();
 
-    let all = land
+    let locations = land
         .into_iter()
         .chain(water.into_iter())
         .chain(rock.into_iter())
         .chain(fishing.into_iter())
         .collect::<Result<Vec<_>>>()?;
 
-    Ok(Area {
-        name: get_encounter_area_name(index).to_string(),
-        locations: all,
-    })
+    let name = &get_encounter_area_name(wild_info.mapGroup, wild_info.mapNum)
+        .context("getting associated map")?[4..];
+    let name = name.to_case(Case::Title).to_string();
+    Ok(Area { name, locations })
 }
 
 fn main() -> Result<()> {
