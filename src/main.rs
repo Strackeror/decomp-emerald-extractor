@@ -4,8 +4,6 @@ use std::path::PathBuf;
 use anyhow::bail;
 use anyhow::Context;
 use anyhow::Result;
-use convert_case::Case;
-use convert_case::Casing;
 use indexmap::IndexMap;
 use json::Area;
 use json::Database;
@@ -28,11 +26,12 @@ use rom::get_species_formes;
 use rom::get_species_levelup_moves;
 use rom::get_species_teachable_moves;
 use rom::get_water_encounters;
-use rom::EvoMethod;
+use rom::DamageCategory;
+use rom::EvoType;
 use rom::Evolution;
-use rom::MoveCategory;
 use rom::RomInfo;
 use rom::SpeciesInfo;
+use rom::ToName;
 use rom::Type;
 
 mod json;
@@ -184,22 +183,22 @@ fn poke_is_valid(index: usize, info: RomInfo) -> bool {
 
 fn build_evos(species: &SpeciesInfo, info: RomInfo) -> Result<Option<Vec<PokemonEvolution>>> {
     fn build_evo(evolution: &Evolution, info: RomInfo) -> Result<PokemonEvolution> {
-        let method = EvoMethod::from_int(evolution.method).unwrap_or(EvoMethod::None);
+        let method = EvoType::from_int(evolution.method as u32).unwrap_or(EvoType::EVO_NONE);
         let target_index = evolution.targetSpecies as usize;
         Ok(PokemonEvolution {
             target: get_species_name(target_index, info)?,
             level: match method {
-                m if m.name().starts_with("Level") => Some(evolution.param as u32),
+                m if m.to_string().starts_with("Level") => Some(evolution.param as u32),
                 _ => None,
             },
             item: match method {
-                m if m.name().starts_with("Item") => {
+                m if m.to_string().starts_with("Item") => {
                     Some(info.items[evolution.param as usize].name.to_string_c()?)
                 }
                 _ => None,
             },
             condition: match method {
-                EvoMethod::ItemDay => Some("Used during the day"),
+                EvoType::EVO_ITEM_DAY => Some("Used during the day"),
                 _ => None,
             }
             .map(str::to_string),
@@ -265,8 +264,9 @@ fn build_poke(species_index: usize, info: RomInfo) -> Result<json::Pokemon> {
 fn build_move(move_index: usize, info: RomInfo) -> Result<Move> {
     let move_info = &info.moves[move_index];
 
-    let category = MoveCategory::from_int(move_info.category()).context("Getting move category")?;
-    let r#type = Type::from_int(move_info.type_() as u8).context("Getting move type")?;
+    let category =
+        DamageCategory::from_int(move_info.category() as u32).context("Getting move category")?;
+    let r#type = Type::from_int(move_info.type_() as u32).context("Getting move type")?;
 
     Ok(Move {
         name: move_info.name.to_string_c()?,
@@ -274,10 +274,10 @@ fn build_move(move_index: usize, info: RomInfo) -> Result<Move> {
         pp: move_info.pp as u32,
         basePower: move_info.power() as _,
         accuracy: json::MoveAccuracy::Number(move_info.accuracy() as _),
-        category: category.name().to_string(),
+        category: category.to_name(),
         priority: move_info.priority(),
         critRatio: move_info.criticalHitStage() as i32,
-        r#type: r#type.name().to_string(),
+        r#type: r#type.to_name(),
         target: String::new(),
         desc: move_info.description.to_string_c()?,
         shortDesc: move_info.description.to_string_c()?,
@@ -339,8 +339,8 @@ fn build_area(index: usize, info: RomInfo) -> Result<Area> {
                 })
             })
             .collect::<Result<Vec<_>>>()?;
-        encounters.sort_by(|a, b|a.species.cmp(&b.species));
-        encounters.dedup_by(|a, b|a.species == b.species);
+        encounters.sort_by(|a, b| a.species.cmp(&b.species));
+        encounters.dedup_by(|a, b| a.species == b.species);
 
         Ok(Location {
             location: name.to_string(),
@@ -363,10 +363,8 @@ fn build_area(index: usize, info: RomInfo) -> Result<Area> {
         .chain(rock.into_iter())
         .chain(fishing.into_iter())
         .collect::<Result<Vec<_>>>()?;
-
-    let name = &get_encounter_area_name(wild_info.mapGroup, wild_info.mapNum)
-        .context("getting associated map")?[4..];
-    let name = name.to_case(Case::Title).to_string();
+    let name = get_encounter_area_name(wild_info.mapGroup, wild_info.mapNum)
+        .context("getting associated map")?;
     Ok(Area { name, locations })
 }
 

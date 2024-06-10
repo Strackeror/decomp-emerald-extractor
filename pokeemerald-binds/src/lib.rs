@@ -5,35 +5,38 @@
 #![allow(clippy::too_many_arguments)]
 include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 
-pub mod constants {
-    use cps::cps;
+macro_rules! handle_constant_list {
+    ($type:ident $(pub const $name:ident: u32 = $value:literal;)*) =>
+    {
+        #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+        pub enum $type {
+            $($name),*
+        }
 
-    #[cps]
-    macro_rules! handle_constants {
-        ($type:ident $filename:literal) =>
-        let $(pub const $name:ident: u32 = $value:literal;)* = cps::include!($filename) in
-        {
-            #[derive(Debug, Clone, Copy)]
-            pub enum $type {
-                $($name),*
-            }
-
-            impl $type {
-                pub fn from_int(i: u32) -> Option<$type> {
-                    match i {
-                        $($value => Some($type::$name),)*
-                        _ => None
-                    }
-                }
-
-                pub fn to_string(self) -> &'static str {
-                    match self {
-                        $($type::$name => stringify!($name),)*
-                    }
+        impl $type {
+            pub fn from_int(i: u32) -> Option<$type> {
+                match i {
+                    $($value => Some($type::$name),)*
+                    _ => None
                 }
             }
-        };
-    }
 
-    handle_constants!{MapGroups "pokeemerald-binds/src/_map_groups.rs"}
+            pub fn c_name(self) -> &'static str {
+                match self {
+                    $($type::$name => stringify!($name),)*
+                }
+            }
+        }
+
+        impl std::fmt::Display for $type {
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                write!(f, "{}", self.c_name())
+            }
+        }
+
+
+    };
 }
+
+mod _constants;
+pub use _constants::*;

@@ -4,135 +4,39 @@ use std::sync::OnceLock;
 use super::guarded_array_to_slice;
 use anyhow::Context;
 use anyhow::Result;
-use paste::paste;
+use convert_case::Case;
+use convert_case::Casing;
 use pokeemerald_binds::Item;
 use pokeemerald_binds::WildPokemon;
 use pokeemerald_binds::WildPokemonHeader;
 use pokeemerald_binds::WildPokemonInfo;
 use serde::Deserialize;
 
-pub use pokeemerald_binds::constants::MapGroups;
 pub use pokeemerald_binds::Ability;
+pub use pokeemerald_binds::DamageCategory;
+pub use pokeemerald_binds::EvoType;
 pub use pokeemerald_binds::Evolution;
 pub use pokeemerald_binds::LevelUpMove;
+pub use pokeemerald_binds::MapGroup;
 pub use pokeemerald_binds::MoveInfo;
 pub use pokeemerald_binds::SpeciesInfo;
+pub use pokeemerald_binds::Type;
 
-macro_rules! enum_int {
-    (enum $name:ident : $type:ty { $prefix:ident... $($suffix:ident),* $(,)? } )  => {
-        paste!{
-            #[derive(Debug, Copy, Clone, PartialEq, Eq)]
-            pub enum $name {
-                $( [<$suffix:camel>] ),*
-            }
-
-            impl $name {
-                pub fn from_int(n: $type) -> Option<$name> {
-                    $(use pokeemerald_binds::[<$prefix _ $suffix>]);*;
-                    match n as u32 {
-                        $([<$prefix _ $suffix>] => Some($name::[<$suffix:camel>])),*,
-                        _ => None
-                    }
-                }
-
-                pub fn name(self) -> &'static str {
-                    match self {
-                        $($name::[<$suffix:camel>] => stringify!([<$suffix:camel>])),*
-                    }
-                }
-            }
-        }
-    };
-}
-
-enum_int! {
-    enum MoveCategory: u16 {
-        DAMAGE_CATEGORY...
-        PHYSICAL,
-        SPECIAL,
-        STATUS,
-    }
-}
-enum_int! {
-    enum Type : u8 {
-        TYPE...
-        NONE,
-        NORMAL,
-        FIGHTING,
-        FLYING,
-        POISON,
-        GROUND,
-        ROCK,
-        BUG,
-        GHOST,
-        STEEL,
-        MYSTERY,
-        FIRE,
-        WATER,
-        GRASS,
-        ELECTRIC,
-        PSYCHIC,
-        ICE,
-        DRAGON,
-        DARK,
-        FAIRY
+pub trait ToName: ToString {
+    const PREFIX: &'static str;
+    fn to_name(&self) -> String {
+        (&self.to_string()[Self::PREFIX.len() + 1..]).to_case(Case::Title)
     }
 }
 
-enum_int! {
-    enum EvoMethod: u16 {
-        EVO...
-        NONE,
-        FRIENDSHIP,
-        FRIENDSHIP_DAY,
-        FRIENDSHIP_NIGHT,
-        LEVEL,
-        TRADE,
-        TRADE_ITEM,
-        ITEM,
-        LEVEL_ATK_GT_DEF,
-        LEVEL_ATK_EQ_DEF,
-        LEVEL_ATK_LT_DEF,
-        LEVEL_SILCOON,
-        LEVEL_CASCOON,
-        LEVEL_NINJASK,
-        LEVEL_SHEDINJA,
-        BEAUTY,
-        LEVEL_FEMALE,
-        LEVEL_MALE,
-        LEVEL_NIGHT,
-        LEVEL_DAY,
-        LEVEL_DUSK,
-        ITEM_HOLD_DAY,
-        ITEM_HOLD_NIGHT,
-        MOVE,
-        FRIENDSHIP_MOVE_TYPE,
-        MAPSEC,
-        ITEM_MALE,
-        ITEM_FEMALE,
-        LEVEL_RAIN,
-        SPECIFIC_MON_IN_PARTY,
-        LEVEL_DARK_TYPE_MON_IN_PARTY,
-        TRADE_SPECIFIC_MON,
-        SPECIFIC_MAP,
-        LEVEL_NATURE_AMPED,
-        LEVEL_NATURE_LOW_KEY,
-        CRITICAL_HITS,
-        SCRIPT_TRIGGER_DMG,
-        DARK_SCROLL,
-        WATER_SCROLL,
-        ITEM_NIGHT,
-        ITEM_DAY,
-        ITEM_HOLD,
-        LEVEL_FOG,
-        MOVE_TWO_SEGMENT,
-        MOVE_THREE_SEGMENT,
-        LEVEL_FAMILY_OF_THREE,
-        LEVEL_FAMILY_OF_FOUR,
-        LEVEL_MOVE_TWENTY_TIMES,
-        LEVEL_RECOIL_DAMAGE_MALE,
-        LEVEL_RECOIL_DAMAGE_FEMALE,
-    }
+impl ToName for Type {
+    const PREFIX: &'static str = "TYPE";
+}
+impl ToName for MapGroup {
+    const PREFIX: &'static str = "MAP";
+}
+impl ToName for DamageCategory {
+    const PREFIX: &'static str = "DAMAGE_CATEGORY";
 }
 
 pub fn get_species_evos(species: &SpeciesInfo) -> Option<&[Evolution]> {
@@ -190,7 +94,7 @@ pub fn get_species_teachable_moves(species: &SpeciesInfo) -> Option<&[u16]> {
     })
 }
 
-pub fn get_species_egg_moves(species: &SpeciesInfo) -> Option<&[u16]> {
+pub fn _get_species_egg_moves(_species: &SpeciesInfo) -> Option<&[u16]> {
     todo!()
 }
 
@@ -231,16 +135,12 @@ pub fn get_types(species: &SpeciesInfo) -> Result<Vec<String>> {
     let mut ret: Vec<Type> = species
         .types
         .iter()
-        .map(|type_id| Type::from_int(*type_id).context("type from id"))
+        .map(|type_id| Type::from_int(*type_id as u32).context("type from id"))
         .collect::<Result<_>>()?;
     if ret[0] == ret[1] {
         _ = ret.pop();
     }
-    Ok(ret
-        .into_iter()
-        .map(Type::name)
-        .map(str::to_string)
-        .collect())
+    Ok(ret.into_iter().map(|t| t.to_name()).collect())
 }
 
 fn get_species_info() -> &'static [SpeciesInfo] {
@@ -281,9 +181,9 @@ fn get_encounter_info() -> &'static [WildPokemonHeader] {
     unsafe { guarded_array_to_slice(gWildMonHeaders.as_ptr(), |h| (*h).mapGroup == 0xff) }
 }
 
-pub fn get_encounter_area_name(group: u8, num: u8) -> Option<&'static str> {
+pub fn get_encounter_area_name(group: u8, num: u8) -> Option<String> {
     let index = ((group as u32) << 8) + (num as u32);
-    MapGroups::from_int(index).map(MapGroups::to_string)
+    MapGroup::from_int(index).map(|m|m.to_name())
 }
 
 #[derive(Deserialize)]

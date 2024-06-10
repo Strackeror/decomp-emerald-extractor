@@ -1,8 +1,5 @@
 use std::env;
 use std::path::PathBuf;
-
-use bindgen::CodegenConfig;
-
 fn main() {
     let decomp_path = PathBuf::from("pokeemerald-expansion");
 
@@ -30,17 +27,42 @@ fn main() {
         .generate()
         .unwrap();
 
-    let map_groups_bindings = bindgen::Builder::default()
-        .header(
-            decomp_path
-                .join("include/constants/map_groups.h")
-                .display()
-                .to_string(),
-        )
-        .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
-        .generate()
-        .unwrap();
+    let constants_path = decomp_path.join("include/constants");
+    let output_path = PathBuf::from("src/_constants.rs");
+    let define_lists: &[(&str, &str, &[(bool, &str)])] = &[
+        ("MapGroup", "map_groups.h", &[]),
+        ("Type", "pokemon.h", &[(true, "TYPE_[A-Z_]+")]),
+        (
+            "EvoType",
+            "pokemon.h",
+            &[(true, "EVO_[A-Z_]+"), (false, "EVO_MODE.*")],
+        ),
+        (
+            "DamageCategory",
+            "pokemon.h",
+            &[(true, "DAMAGE_CATEGORY_[A-Z_]+")],
+        ),
+    ];
+
+    let mut constants_content = String::new();
+    for (name, header, filters) in define_lists {
+        let mut builder = bindgen::Builder::default();
+        for (include, regex) in filters.iter() {
+            builder = match include {
+                true => builder.allowlist_item(regex),
+                false => builder.blocklist_item(regex),
+            }
+        }
+        let generated = builder
+            .header(constants_path.join(header).display().to_string())
+            .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
+            .generate()
+            .unwrap()
+            .to_string();
+        let generated = format!("handle_constant_list!{{{}\n{}\n}}\n", name, generated);
+        constants_content += &generated;
+    }
+    std::fs::write(output_path, constants_content).unwrap();
 
     bindings.write_to_file(out_dir.join("bindings.rs")).unwrap();
-    map_groups_bindings.write_to_file("src/_map_groups.rs").unwrap();
 }
