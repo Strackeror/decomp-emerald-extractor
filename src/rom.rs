@@ -19,6 +19,7 @@ pub use pokeemerald_binds::Evolution;
 pub use pokeemerald_binds::LevelUpMove;
 pub use pokeemerald_binds::MapGroup;
 pub use pokeemerald_binds::MoveInfo;
+pub use pokeemerald_binds::Species;
 pub use pokeemerald_binds::SpeciesInfo;
 pub use pokeemerald_binds::Type;
 
@@ -37,6 +38,16 @@ impl ToName for MapGroup {
 }
 impl ToName for DamageCategory {
     const PREFIX: &'static str = "DAMAGE_CATEGORY";
+}
+impl ToName for Species {
+    const PREFIX: &'static str = "SPECIES";
+}
+impl ToName for EvoType {
+    const PREFIX: &'static str = "EVO";
+}
+
+pub fn get_full_species_name(index: u16) -> Option<String> {
+    Species::from_int(index as u32).map(|s| s.to_name())
 }
 
 pub fn get_species_evos(species: &SpeciesInfo) -> Option<&[Evolution]> {
@@ -183,16 +194,7 @@ fn get_encounter_info() -> &'static [WildPokemonHeader] {
 
 pub fn get_encounter_area_name(group: u8, num: u8) -> Option<String> {
     let index = ((group as u32) << 8) + (num as u32);
-    MapGroup::from_int(index).map(|m|m.to_name())
-}
-
-#[derive(Deserialize)]
-pub struct OverrideList(pub BTreeMap<String, BTreeMap<usize, String>>);
-const OVERRIDE_LIST_STR: &str = include_str!("overrides.json");
-static OVERRIDE_LIST: OnceLock<OverrideList> = OnceLock::new();
-
-fn get_override_list() -> &'static OverrideList {
-    OVERRIDE_LIST.get_or_init(|| serde_json::from_str(OVERRIDE_LIST_STR).unwrap())
+    MapGroup::from_int(index).map(|m| m.to_name())
 }
 
 #[derive(Clone, Copy)]
@@ -202,7 +204,6 @@ pub struct RomInfo {
     pub moves: &'static [MoveInfo],
     pub species: &'static [SpeciesInfo],
     pub encounters: &'static [WildPokemonHeader],
-    pub override_list: &'static OverrideList,
 }
 
 pub fn get_info() -> RomInfo {
@@ -212,6 +213,5 @@ pub fn get_info() -> RomInfo {
         moves: get_moves_info(),
         species: get_species_info(),
         encounters: get_encounter_info(),
-        override_list: get_override_list(),
     }
 }

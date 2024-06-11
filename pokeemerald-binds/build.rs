@@ -23,6 +23,7 @@ fn main() {
             &format!("-I{}", decomp_path.join("gflib").display()),
         ])
         .header("wrapper.h")
+        .derive_eq(true)
         .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
         .generate()
         .unwrap();
@@ -42,6 +43,7 @@ fn main() {
             "pokemon.h",
             &[(true, "DAMAGE_CATEGORY_[A-Z_]+")],
         ),
+        ("Species", "species.h", &[]),
     ];
 
     let mut constants_content = String::new();

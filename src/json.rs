@@ -61,8 +61,10 @@ pub struct Pokemon {
 
     pub evos: Option<Vec<PokemonEvolution>>,
 
+    pub baseSpecies: Option<String>,
     pub forme: Option<String>,
     pub formes: Option<Vec<String>>,
+    pub cosmeticFormes: Option<Vec<String>>,
     pub requiredItems: Option<Vec<String>>,
 
     pub unusable: Option<bool>,

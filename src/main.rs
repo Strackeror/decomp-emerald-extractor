@@ -1,3 +1,4 @@
+use std::collections::BTreeMap;
 use std::ffi::CStr;
 use std::path::PathBuf;
 
@@ -19,6 +20,7 @@ use pokeemerald_binds::Ability;
 use pokeemerald_binds::WildPokemon;
 use rom::get_encounter_area_name;
 use rom::get_fishing_encounters;
+use rom::get_full_species_name;
 use rom::get_info;
 use rom::get_land_encounters;
 use rom::get_rock_encounters;
@@ -29,7 +31,6 @@ use rom::get_water_encounters;
 use rom::DamageCategory;
 use rom::EvoType;
 use rom::Evolution;
-use rom::RomInfo;
 use rom::SpeciesInfo;
 use rom::ToName;
 use rom::Type;
@@ -56,6 +57,18 @@ impl<const S: usize> ToStringC for [u8; S] {
     }
 }
 
+#[derive(Clone, Copy)]
+struct RomInfo<'a> {
+    rom: rom::RomInfo,
+    cosmetic_formes: &'a BTreeMap<u16, u16>,
+}
+
+impl<'a> RomInfo<'a> {
+    fn species(&self, index: u16) -> &SpeciesInfo {
+        &self.rom.species[index as usize]
+    }
+}
+
 unsafe fn guarded_array_to_slice<'a, T, F: Fn(*const T) -> bool>(
     ptr: *const T,
     f_is_end: F,
@@ -75,6 +88,38 @@ fn idify(str: &str) -> String {
         .chars()
         .filter(|c| matches!(c, '0'..='9' | 'a'..='z'))
         .collect()
+}
+
+fn get_cosmetic_formes(species_list: &[SpeciesInfo]) -> BTreeMap<u16, u16> {
+    let mut out_map = BTreeMap::new();
+    for (index, species) in (0..).zip(species_list.iter()) {
+        let formes = match get_species_formes(species) {
+            None => continue,
+            Some(f) => f,
+        };
+
+        for forme_index in formes.iter() {
+            if *forme_index == index {
+                break;
+            }
+
+            let base_species = &species_list[*forme_index as usize];
+            if base_species.abilities == species.abilities
+                && base_species.types == species.types
+                && species.baseHP == base_species.baseHP
+                && species.baseAttack == base_species.baseAttack
+                && species.baseDefense == base_species.baseDefense
+                && species.baseSpAttack == base_species.baseSpAttack
+                && species.baseSpDefense == base_species.baseSpDefense
+                && get_species_levelup_moves(species) == get_species_levelup_moves(base_species)
+                && get_species_teachable_moves(species) == get_species_teachable_moves(base_species)
+            {
+                out_map.insert(index, *forme_index);
+                break;
+            }
+        }
+    }
+    out_map
 }
 
 fn build_ability(index: u32, ability: &rom::Ability) -> Result<json::Ability> {
@@ -122,82 +167,37 @@ fn build_poke_abilities(
     Ok(pk_abilities)
 }
 
-enum Override {
-    Keep,
-    Drop,
-    Renamed(String),
-}
-
-fn get_override_name(index: usize, info: RomInfo) -> Override {
-    let species = &info.species[index];
-
-    let name = match species.speciesName.to_string_c() {
-        Err(_) => return Override::Drop,
-        Ok(n) => n,
-    };
-
-    let formes = match get_species_formes(species) {
-        None => return Override::Keep,
-        Some(f) => f,
-    };
-
-    let forme_index = match formes.iter().position(|fid| *fid as usize == index) {
-        None => return Override::Drop,
-        Some(f) => f,
-    };
-
-    let entry = match info.override_list.0.get(&name) {
-        None if forme_index == 0 => return Override::Keep,
-        None => return Override::Drop,
-        Some(e) => e,
-    };
-
-    match entry.get(&forme_index) {
-        None => Override::Drop,
-        Some(name) => Override::Renamed(name.clone()),
-    }
-}
-
-fn get_species_name(index: usize, info: RomInfo) -> Result<String> {
-    if let Override::Renamed(n) = get_override_name(index, info) {
-        return Ok(n);
-    }
-
-    let species = &info.species[index];
-    let name = species.speciesName.to_string_c()?;
-    match get_species_formes(species) {
-        None => Ok(name),
-        Some(list) if list[0] as usize == index => Ok(name),
-        Some(_) => Ok(format!("{name}-{index}-UNKNOWN")),
-    }
-}
-
-fn poke_is_valid(index: usize, info: RomInfo) -> bool {
-    let species = &info.species[index];
-
+fn poke_is_valid(index: u16, info: RomInfo) -> bool {
+    let species = &info.species(index);
     if species.natDexNum == 0 {
         return false;
     }
-    !matches!(get_override_name(index, info), Override::Drop)
+    if info.cosmetic_formes.contains_key(&index) {
+        return false;
+    }
+    true
 }
 
 fn build_evos(species: &SpeciesInfo, info: RomInfo) -> Result<Option<Vec<PokemonEvolution>>> {
     fn build_evo(evolution: &Evolution, info: RomInfo) -> Result<PokemonEvolution> {
         let method = EvoType::from_int(evolution.method as u32).unwrap_or(EvoType::EVO_NONE);
-        let target_index = evolution.targetSpecies as usize;
+        let target_index = evolution.targetSpecies;
         Ok(PokemonEvolution {
-            target: get_species_name(target_index, info)?,
+            target: get_full_species_name(target_index).context("getting species name")?,
             level: match method {
-                m if m.to_string().starts_with("Level") => Some(evolution.param as u32),
+                m if m.to_name().starts_with("Level") => Some(evolution.param as u32),
                 _ => None,
             },
             item: match method {
-                m if m.to_string().starts_with("Item") => {
-                    Some(info.items[evolution.param as usize].name.to_string_c()?)
-                }
+                m if m.to_name().starts_with("Item") => Some(
+                    info.rom.items[evolution.param as usize]
+                        .name
+                        .to_string_c()?,
+                ),
                 _ => None,
             },
             condition: match method {
+                EvoType::EVO_FRIENDSHIP => Some("Friendship"),
                 EvoType::EVO_ITEM_DAY => Some("Used during the day"),
                 _ => None,
             }
@@ -212,32 +212,75 @@ fn build_evos(species: &SpeciesInfo, info: RomInfo) -> Result<Option<Vec<Pokemon
 
     Ok(Some(
         evos.iter()
-            .filter(|i| poke_is_valid(i.targetSpecies as usize, info))
+            .filter(|i| poke_is_valid(i.targetSpecies, info))
             .map(|evo| build_evo(evo, info))
             .collect::<Result<_>>()?,
     ))
 }
 
+fn get_forme_name(index: u16, info: RomInfo) -> Result<Option<String>> {
+    let species = info.species(index);
+    if get_species_formes(species).is_none() {
+        return Ok(None);
+    }
+
+    let current_name = get_full_species_name(index).context("getting current name")?;
+    let (_, forme) = match current_name.split_once(' ') {
+        None => return Ok(None),
+        Some(n) => n,
+    };
+    Ok(Some(forme.to_string()))
+}
+
+fn get_base_name(index:u16, info:RomInfo) -> Result<Option<String>> {
+    let species = info.species(index);
+    if get_species_formes(species).is_none() {
+        return Ok(None);
+    }
+    Ok(Some(species.speciesName.to_string_c()?))
+}
+
 fn build_formes(species: &SpeciesInfo, info: RomInfo) -> Result<Option<Vec<String>>> {
-    let formes = match rom::get_species_formes(species) {
+    let formes = match get_species_formes(species) {
         None => return Ok(None),
         Some(f) => f,
     };
 
-    Ok(Some(
-        formes
-            .iter()
-            .filter(|i| poke_is_valid(**i as usize, info))
-            .map(|i| get_species_name(*i as usize, info))
-            .collect::<Result<_>>()?,
-    ))
+    let formes = formes
+        .iter()
+        .filter(|i| poke_is_valid(**i, info))
+        .map(|i| get_full_species_name(*i).context("getting forme species name"))
+        .collect::<Result<Vec<_>>>()?;
+    if formes.len() <= 1 {
+        return Ok(None);
+    }
+    Ok(Some(formes))
 }
 
-fn build_poke(species_index: usize, info: RomInfo) -> Result<json::Pokemon> {
-    let species = &info.species[species_index];
+fn build_cosmetic_formes(index: u16, info: RomInfo) -> Result<Option<Vec<String>>> {
+    let cosmetics = info
+        .cosmetic_formes
+        .iter()
+        .filter(|(_, base)| **base == index)
+        .map(|(cosmetic, _)| get_forme_name(*cosmetic, info))
+        .collect::<Result<Vec<_>>>()?
+        .into_iter()
+        .flatten()
+        .collect::<Vec<_>>();
+
+    if cosmetics.is_empty() {
+        Ok(None)
+    } else {
+        Ok(Some(cosmetics))
+    }
+}
+
+fn build_poke(index: u16, info: RomInfo) -> Result<json::Pokemon> {
+    let species = &info.species(index);
+    let formes = build_formes(species, info)?;
     Ok(Pokemon {
         num: species.natDexNum as _,
-        name: get_species_name(species_index, info)?,
+        name: get_full_species_name(index).context("getting species name")?,
         types: rom::get_types(species)?,
         gender: None,
         genderRatio: None,
@@ -250,19 +293,23 @@ fn build_poke(species_index: usize, info: RomInfo) -> Result<json::Pokemon> {
             spd: species.baseSpDefense,
         },
 
-        abilities: build_poke_abilities(species, info.abilities)?,
+        abilities: build_poke_abilities(species, info.rom.abilities)?,
         weightkg: species.weight as f32 / 10.0,
         evos: build_evos(species, info)?,
         eggGroups: vec![],
-        forme: None,
-        formes: build_formes(species, info)?,
+
+        forme: get_forme_name(index, info)?,
+        baseSpecies: get_base_name(index, info)?,
+        formes,
+        cosmeticFormes: build_cosmetic_formes(index, info)?,
         requiredItems: None,
+
         unusable: None,
     })
 }
 
 fn build_move(move_index: usize, info: RomInfo) -> Result<Move> {
-    let move_info = &info.moves[move_index];
+    let move_info = &info.rom.moves[move_index];
 
     let category =
         DamageCategory::from_int(move_info.category() as u32).context("Getting move category")?;
@@ -292,8 +339,8 @@ fn build_move(move_index: usize, info: RomInfo) -> Result<Move> {
     })
 }
 
-fn build_learnset(species_index: usize, info: RomInfo) -> Result<Learnset> {
-    let species = &info.species[species_index];
+fn build_learnset(species_index: u16, info: RomInfo) -> Result<Learnset> {
+    let species = info.species(species_index);
 
     let level_up_moves: Vec<LearnsetEntry> = get_species_levelup_moves(species)
         .unwrap_or(&[])
@@ -302,7 +349,11 @@ fn build_learnset(species_index: usize, info: RomInfo) -> Result<Learnset> {
             Ok(LearnsetEntry {
                 how: json::Method::lvl,
                 level: Some(lvlup_move.level as _),
-                move_: idify(&info.moves[lvlup_move.move_ as usize].name.to_string_c()?),
+                move_: idify(
+                    &info.rom.moves[lvlup_move.move_ as usize]
+                        .name
+                        .to_string_c()?,
+                ),
             })
         })
         .collect::<Result<_>>()?;
@@ -314,7 +365,7 @@ fn build_learnset(species_index: usize, info: RomInfo) -> Result<Learnset> {
             Ok(LearnsetEntry {
                 how: json::Method::tm,
                 level: None,
-                move_: idify(&info.moves[*move_ as usize].name.to_string_c()?),
+                move_: idify(&info.rom.moves[*move_ as usize].name.to_string_c()?),
             })
         })
         .collect::<Result<_>>()?;
@@ -326,14 +377,15 @@ fn build_learnset(species_index: usize, info: RomInfo) -> Result<Learnset> {
 }
 
 fn build_area(index: usize, info: RomInfo) -> Result<Area> {
-    let wild_info = &info.encounters[index];
+    let wild_info = &info.rom.encounters[index];
 
-    fn build_location(name: &str, encounters: &[WildPokemon], info: RomInfo) -> Result<Location> {
+    fn build_location(name: &str, encounters: &[WildPokemon], _info: RomInfo) -> Result<Location> {
         let mut encounters = encounters
             .iter()
             .map(|e| {
                 Ok(Encounter {
-                    species: get_species_name(e.species as usize, info)?,
+                    species: get_full_species_name(e.species)
+                        .context("getting area species name")?,
                     chance: None,
                     level: Some((e.minLevel as _, e.maxLevel as _)),
                 })
@@ -370,8 +422,15 @@ fn build_area(index: usize, info: RomInfo) -> Result<Area> {
 
 fn main() -> Result<()> {
     let info = get_info();
+    let cosmetic_formes = get_cosmetic_formes(info.species);
+
+    let info = RomInfo {
+        rom: info,
+        cosmetic_formes: &cosmetic_formes,
+    };
 
     let abilities: IndexMap<String, json::Ability> = info
+        .rom
         .abilities
         .iter()
         .zip(0..)
@@ -381,7 +440,7 @@ fn main() -> Result<()> {
         })
         .collect::<Result<_>>()?;
 
-    let mut pokemons: IndexMap<String, Pokemon> = (0..info.species.len())
+    let mut pokemons: IndexMap<String, Pokemon> = (0..info.rom.species.len() as u16)
         .filter(|i| poke_is_valid(*i, info))
         .map(|i| build_poke(i, info))
         .collect::<Result<Vec<_>>>()?
@@ -390,7 +449,7 @@ fn main() -> Result<()> {
         .collect();
     pokemons.sort_by_cached_key(|_, v| v.num);
 
-    let moves: IndexMap<String, Move> = (1..info.moves.len())
+    let moves: IndexMap<String, Move> = (1..info.rom.moves.len())
         .map(|i| {
             let move_ = build_move(i, info)?;
             Ok((idify(&move_.name), move_))
@@ -398,17 +457,20 @@ fn main() -> Result<()> {
         .collect::<Result<_>>()?;
 
     let learnsets: IndexMap<String, Learnset> = info
+        .rom
         .species
         .iter()
         .zip(0..)
         .filter(|(_, i)| poke_is_valid(*i, info))
         .map(|(_, index)| {
             let learnset = build_learnset(index, info)?;
-            Ok((idify(&get_species_name(index, info)?), learnset))
+            let species_name =
+                get_full_species_name(index).context("getting species name for learnset")?;
+            Ok((idify(&species_name), learnset))
         })
         .collect::<Result<_>>()?;
 
-    let areas = (0..info.encounters.len())
+    let areas = (0..info.rom.encounters.len())
         .map(|i| {
             let area = build_area(i, info)?;
             Ok((idify(&area.name), area))
