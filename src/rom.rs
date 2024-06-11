@@ -1,5 +1,3 @@
-use std::collections::BTreeMap;
-use std::sync::OnceLock;
 
 use super::guarded_array_to_slice;
 use anyhow::Context;
@@ -10,7 +8,6 @@ use pokeemerald_binds::Item;
 use pokeemerald_binds::WildPokemon;
 use pokeemerald_binds::WildPokemonHeader;
 use pokeemerald_binds::WildPokemonInfo;
-use serde::Deserialize;
 
 pub use pokeemerald_binds::Ability;
 pub use pokeemerald_binds::DamageCategory;
@@ -93,14 +90,14 @@ pub fn get_species_levelup_moves(species: &SpeciesInfo) -> Option<&[LevelUpMove]
 }
 
 pub fn get_species_teachable_moves(species: &SpeciesInfo) -> Option<&[u16]> {
-    use pokeemerald_binds::MOVE_UNAVAILABLE;
+    use pokeemerald_binds::Moves::MOVE_UNAVAILABLE;
     if species.teachableLearnset.is_null() {
         return None;
     }
 
     Some(unsafe {
         guarded_array_to_slice(species.teachableLearnset, |move_| {
-            (*move_) as u32 == MOVE_UNAVAILABLE
+            (*move_) as u32 == MOVE_UNAVAILABLE.to_int()
         })
     })
 }
@@ -156,31 +153,31 @@ pub fn get_types(species: &SpeciesInfo) -> Result<Vec<String>> {
 
 fn get_species_info() -> &'static [SpeciesInfo] {
     use pokeemerald_binds::gSpeciesInfo;
-    use pokeemerald_binds::NUM_SPECIES;
+    use pokeemerald_binds::Species::NUM_SPECIES;
 
-    const COUNT: usize = NUM_SPECIES as usize;
+    const COUNT: usize = NUM_SPECIES.to_int() as usize;
     unsafe { std::slice::from_raw_parts(gSpeciesInfo.as_ptr(), COUNT) }
 }
 
 fn get_abilities_info() -> &'static [Ability] {
     use pokeemerald_binds::gAbilitiesInfo;
-    use pokeemerald_binds::ABILITIES_COUNT;
+    use pokeemerald_binds::Abilities::ABILITIES_COUNT;
 
-    const COUNT: usize = ABILITIES_COUNT as usize;
+    const COUNT: usize = ABILITIES_COUNT.to_int() as usize;
     unsafe { std::slice::from_raw_parts(gAbilitiesInfo.as_ptr(), COUNT) }
 }
 
 fn get_moves_info() -> &'static [MoveInfo] {
     use pokeemerald_binds::gMovesInfo;
-    use pokeemerald_binds::MOVES_COUNT;
+    use pokeemerald_binds::Moves::MOVES_COUNT;
 
-    const COUNT: usize = MOVES_COUNT as usize;
+    const COUNT: usize = MOVES_COUNT.to_int() as usize;
     unsafe { std::slice::from_raw_parts(gMovesInfo.as_ptr(), COUNT) }
 }
 
 fn get_item_info() -> &'static [Item] {
     use pokeemerald_binds::gItemsInfo;
-    use pokeemerald_binds::ITEMS_COUNT;
+    use pokeemerald_binds::Items::ITEMS_COUNT;
 
     const COUNT: usize = ITEMS_COUNT as usize;
     unsafe { std::slice::from_raw_parts(gItemsInfo.as_ptr(), COUNT) }

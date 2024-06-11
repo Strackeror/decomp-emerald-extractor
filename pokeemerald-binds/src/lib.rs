@@ -14,10 +14,17 @@ macro_rules! handle_constant_list {
         }
 
         impl $type {
-            pub fn from_int(i: u32) -> Option<$type> {
+            pub const fn from_int(i: u32) -> Option<$type> {
+                #[allow(unreachable_patterns)]
                 match i {
                     $($value => Some($type::$name),)*
                     _ => None
+                }
+            }
+
+            pub const fn to_int(self) -> u32 {
+                match self {
+                    $($type::$name => $value,)*
                 }
             }
 

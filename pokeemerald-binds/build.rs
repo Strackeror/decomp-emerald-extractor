@@ -1,12 +1,11 @@
 use std::env;
 use std::path::PathBuf;
 fn main() {
-    let decomp_path = PathBuf::from("pokeemerald-expansion");
-
-    let include_paths = ["include", "src", "gflib"].map(|path| decomp_path.join(path));
+    let source_path = PathBuf::from("source");
+    let stubs_path = PathBuf::from("stubs");
 
     cc::Build::new()
-        .includes(&include_paths)
+        .includes(&[&source_path, &stubs_path])
         .compiler("clang")
         .file("wrapper.c")
         .warnings(false)
@@ -18,9 +17,8 @@ fn main() {
     let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
     let bindings = bindgen::Builder::default()
         .clang_args(&[
-            &format!("-I{}", decomp_path.join("include").display()),
-            &format!("-I{}", decomp_path.join("src").display()),
-            &format!("-I{}", decomp_path.join("gflib").display()),
+            &format!("-I{}", source_path.display()),
+            &format!("-I{}", stubs_path.display()),
         ])
         .header("wrapper.h")
         .derive_eq(true)
@@ -28,7 +26,7 @@ fn main() {
         .generate()
         .unwrap();
 
-    let constants_path = decomp_path.join("include/constants");
+    let constants_path = source_path.join("constants");
     let output_path = PathBuf::from("src/_constants.rs");
     let define_lists: &[(&str, &str, &[(bool, &str)])] = &[
         ("MapGroup", "map_groups.h", &[]),
@@ -44,6 +42,13 @@ fn main() {
             &[(true, "DAMAGE_CATEGORY_[A-Z_]+")],
         ),
         ("Species", "species.h", &[]),
+        (
+            "Items",
+            "items.h",
+            &[(true, "ITEM_.*"), (true, "ITEMS_COUNT"), (false, "ITEM_USE_.*")],
+        ),
+        ("Abilities", "abilities.h", &[]),
+        ("Moves", "moves.h", &[]),
     ];
 
     let mut constants_content = String::new();
