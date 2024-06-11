@@ -1,5 +1,6 @@
 use std::env;
 use std::path::PathBuf;
+
 fn main() {
     let source_path = PathBuf::from("source");
     let stubs_path = PathBuf::from("stubs");
@@ -11,9 +12,7 @@ fn main() {
         .warnings(false)
         .flag("-Wno-everything")
         .compile("pokeemerald");
-
     println!("cargo::rerun-if-changed=wrapper.c");
-
     let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
     let bindings = bindgen::Builder::default()
         .clang_args(&[
@@ -45,7 +44,11 @@ fn main() {
         (
             "Items",
             "items.h",
-            &[(true, "ITEM_.*"), (true, "ITEMS_COUNT"), (false, "ITEM_USE_.*")],
+            &[
+                (true, "ITEM_.*"),
+                (true, "ITEMS_COUNT"),
+                (false, "ITEM_USE_.*"),
+            ],
         ),
         ("Abilities", "abilities.h", &[]),
         ("Moves", "moves.h", &[]),
