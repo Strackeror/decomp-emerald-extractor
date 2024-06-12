@@ -1,4 +1,5 @@
 use std::collections::BTreeMap;
+use std::collections::HashSet;
 use std::ffi::CStr;
 use std::path::PathBuf;
 
@@ -24,7 +25,9 @@ use rom::get_full_species_name;
 use rom::get_info;
 use rom::get_land_encounters;
 use rom::get_rock_encounters;
+use rom::get_species_evos;
 use rom::get_species_formes;
+use rom::get_species_formes_transitions;
 use rom::get_species_levelup_moves;
 use rom::get_species_teachable_moves;
 use rom::get_water_encounters;
@@ -120,6 +123,82 @@ fn get_cosmetic_formes(species_list: &[SpeciesInfo]) -> BTreeMap<u16, u16> {
         }
     }
     out_map
+}
+
+fn get_available_pokes(info: RomInfo) -> std::collections::HashSet<u16> {
+    use std::collections::HashSet as Set;
+
+    let mut set: Set<u16> = Set::new();
+    for area in info.rom.encounters {
+        let fish = match get_fishing_encounters(area) {
+            None => (None, None, None),
+            Some((a, b, c)) => (Some(a), Some(b), Some(c)),
+        };
+        let ground = get_land_encounters(area);
+        let rock = get_rock_encounters(area);
+        let surf = get_water_encounters(area);
+        for location in [fish.0, fish.1, fish.2, ground, rock, surf]
+            .into_iter()
+            .flatten()
+        {
+            for poke in location {
+                set.insert(
+                    *info
+                        .cosmetic_formes
+                        .get(&poke.species)
+                        .unwrap_or(&poke.species),
+                );
+            }
+        }
+    }
+
+    let mut new_set = set.clone();
+    for _ in 0..3 {
+        let evo_set = new_set
+            .iter()
+            .map(|index| info.species(*index))
+            .flat_map(|species| {
+                get_species_evos(species)
+                    .into_iter()
+                    .flatten()
+                    .map(|evo| evo.targetSpecies)
+            })
+            .collect::<Vec<_>>();
+        let forme_set = new_set
+            .iter()
+            .map(|index| info.species(*index))
+            .flat_map(|species| {
+                get_species_formes_transitions(species)
+                    .into_iter()
+                    .flatten()
+                    .map(|forme_change| forme_change.0)
+            })
+            .collect::<Vec<_>>();
+
+        let prevo_set = info
+            .rom
+            .species
+            .iter()
+            .zip(0..)
+            .filter(|(species, _)| {
+                get_species_evos(species)
+                    .into_iter()
+                    .flatten()
+                    .any(|e| new_set.contains(&e.targetSpecies))
+            })
+            .map(|(_, index)| index)
+            .collect::<Set<_>>();
+
+        new_set.clear();
+        new_set.extend(evo_set);
+        new_set.extend(forme_set);
+        new_set.extend(prevo_set);
+
+        new_set = new_set.difference(&set).cloned().collect();
+        set.extend(&new_set)
+    }
+
+    set
 }
 
 fn build_ability(index: u32, ability: &rom::Ability) -> Result<json::Ability> {
@@ -232,7 +311,7 @@ fn get_forme_name(index: u16, info: RomInfo) -> Result<Option<String>> {
     Ok(Some(forme.to_string()))
 }
 
-fn get_base_name(index:u16, info:RomInfo) -> Result<Option<String>> {
+fn get_base_name(index: u16, info: RomInfo) -> Result<Option<String>> {
     let species = info.species(index);
     if get_species_formes(species).is_none() {
         return Ok(None);
@@ -275,7 +354,7 @@ fn build_cosmetic_formes(index: u16, info: RomInfo) -> Result<Option<Vec<String>
     }
 }
 
-fn build_poke(index: u16, info: RomInfo) -> Result<json::Pokemon> {
+fn build_poke(index: u16, info: RomInfo, available_pokes: &HashSet<u16>) -> Result<json::Pokemon> {
     let species = &info.species(index);
     let formes = build_formes(species, info)?;
     Ok(Pokemon {
@@ -304,7 +383,10 @@ fn build_poke(index: u16, info: RomInfo) -> Result<json::Pokemon> {
         cosmeticFormes: build_cosmetic_formes(index, info)?,
         requiredItems: None,
 
-        unusable: None,
+        unusable: match available_pokes.contains(&index) {
+            true => None,
+            false => Some(true),
+        },
     })
 }
 
@@ -428,6 +510,7 @@ fn main() -> Result<()> {
         rom: info,
         cosmetic_formes: &cosmetic_formes,
     };
+    let available_pokes = get_available_pokes(info);
 
     let abilities: IndexMap<String, json::Ability> = info
         .rom
@@ -442,7 +525,7 @@ fn main() -> Result<()> {
 
     let mut pokemons: IndexMap<String, Pokemon> = (0..info.rom.species.len() as u16)
         .filter(|i| poke_is_valid(*i, info))
-        .map(|i| build_poke(i, info))
+        .map(|i| build_poke(i, info, &available_pokes))
         .collect::<Result<Vec<_>>>()?
         .into_iter()
         .map(|pokemon| (idify(&pokemon.name), pokemon))

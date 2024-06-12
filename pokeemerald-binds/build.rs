@@ -52,6 +52,11 @@ fn main() {
         ),
         ("Abilities", "abilities.h", &[]),
         ("Moves", "moves.h", &[]),
+        (
+            "FormChangeType",
+            "form_change_types.h",
+            &[(true, "FORM.*"), (true, ".*TERMINATOR")],
+        ),
     ];
 
     let mut constants_content = String::new();

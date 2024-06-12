@@ -1,9 +1,9 @@
-
 use super::guarded_array_to_slice;
 use anyhow::Context;
 use anyhow::Result;
 use convert_case::Case;
 use convert_case::Casing;
+use pokeemerald_binds::FormChangeType;
 use pokeemerald_binds::Item;
 use pokeemerald_binds::WildPokemon;
 use pokeemerald_binds::WildPokemonHeader;
@@ -73,6 +73,27 @@ pub fn get_species_formes(species: &SpeciesInfo) -> Option<&[u16]> {
         guarded_array_to_slice(species.formSpeciesIdTable, |form_id| {
             *form_id as u32 == FORM_SPECIES_END
         })
+    })
+}
+
+pub fn get_species_formes_transitions(species: &SpeciesInfo) -> Option<Vec<(u16, FormChangeType)>> {
+    if species.formChangeTable.is_null() {
+        return None;
+    }
+
+    Some(unsafe {
+        guarded_array_to_slice(species.formChangeTable, |f| {
+            (*f).method as u32 == FormChangeType::FORM_CHANGE_TERMINATOR.to_int()
+        })
+        .iter()
+        .map(|f| {
+            (
+                f.targetSpecies,
+                FormChangeType::from_int(f.method as u32)
+                    .unwrap_or(FormChangeType::FORM_CHANGE_TERMINATOR),
+            )
+        })
+        .collect()
     })
 }
 
