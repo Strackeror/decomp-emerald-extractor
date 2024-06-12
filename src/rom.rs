@@ -3,6 +3,7 @@ use anyhow::Context;
 use anyhow::Result;
 use convert_case::Case;
 use convert_case::Casing;
+use pokeemerald_binds::gTmList;
 use pokeemerald_binds::FormChangeType;
 use pokeemerald_binds::Item;
 use pokeemerald_binds::WildPokemon;
@@ -170,6 +171,10 @@ pub fn get_types(species: &SpeciesInfo) -> Result<Vec<String>> {
         _ = ret.pop();
     }
     Ok(ret.into_iter().map(|t| t.to_name()).collect())
+}
+
+pub fn get_tm_hm_list() -> &'static [u16] {
+    unsafe { guarded_array_to_slice(gTmList.as_ptr(), |i|(*i == 0xffff)) }
 }
 
 fn get_species_info() -> &'static [SpeciesInfo] {

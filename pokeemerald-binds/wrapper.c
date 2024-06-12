@@ -72,6 +72,19 @@ enum
     ENUM_HM_START_ = ITEM_HM01 - 1,
     FOREACH_HM(ENUM_HM)
 };
+
+#undef ENUM_TM
+#undef ENUM_HM
+
+#define ENUM_TM(id) CAT(MOVE_, id),
+#define ENUM_HM(id) CAT(MOVE_, id),
+
+const u16 gTmList[] = {
+  FOREACH_TM(ENUM_TM)
+  FOREACH_HM(ENUM_HM)
+  0xffff,
+};
+
 #undef ENUM_TM
 #undef ENUM_HM
 

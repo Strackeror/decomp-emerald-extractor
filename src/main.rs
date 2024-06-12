@@ -30,6 +30,7 @@ use rom::get_species_formes;
 use rom::get_species_formes_transitions;
 use rom::get_species_levelup_moves;
 use rom::get_species_teachable_moves;
+use rom::get_tm_hm_list;
 use rom::get_water_encounters;
 use rom::DamageCategory;
 use rom::EvoType;
@@ -423,6 +424,7 @@ fn build_move(move_index: usize, info: RomInfo) -> Result<Move> {
 
 fn build_learnset(species_index: u16, info: RomInfo) -> Result<Learnset> {
     let species = info.species(species_index);
+    let tms = get_tm_hm_list();
 
     let level_up_moves: Vec<LearnsetEntry> = get_species_levelup_moves(species)
         .unwrap_or(&[])
@@ -440,21 +442,42 @@ fn build_learnset(species_index: u16, info: RomInfo) -> Result<Learnset> {
         })
         .collect::<Result<_>>()?;
 
-    let teachable_moves: Vec<LearnsetEntry> = get_species_teachable_moves(species)
+    let (tm_moves, tutor_moves) = get_species_teachable_moves(species)
         .unwrap_or(&[])
         .iter()
-        .map(|move_| {
+        .fold((Vec::new(), Vec::new()), |mut acc, elem| {
+            match tms.contains(elem) {
+                true => acc.0.push(elem),
+                false => acc.1.push(elem),
+            };
+            acc
+        });
+    let tm_moves = tm_moves
+        .into_iter()
+        .map(|id| {
             Ok(LearnsetEntry {
                 how: json::Method::tm,
                 level: None,
-                move_: idify(&info.rom.moves[*move_ as usize].name.to_string_c()?),
+                move_: idify(&info.rom.moves[*id as usize].name.to_string_c()?),
             })
         })
-        .collect::<Result<_>>()?;
+        .collect::<Result<Vec<_>>>()?;
+    let tutor_moves = tutor_moves
+        .into_iter()
+        .map(|id| {
+            Ok(LearnsetEntry {
+                how: json::Method::tutor,
+                level: None,
+                move_: idify(&info.rom.moves[*id as usize].name.to_string_c()?),
+            })
+        })
+        .collect::<Result<Vec<_>>>()?;
+
 
     let mut moves = Vec::new();
     moves.extend(level_up_moves);
-    moves.extend(teachable_moves);
+    moves.extend(tm_moves);
+    moves.extend(tutor_moves);
     Ok(Learnset(moves))
 }
 
