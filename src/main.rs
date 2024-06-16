@@ -18,6 +18,9 @@ use json::Pokemon;
 use json::PokemonEvolution;
 use json::Stats;
 use pokeemerald_binds::Ability;
+use pokeemerald_binds::EggGroup;
+use pokeemerald_binds::Item;
+use pokeemerald_binds::MoveInfo;
 use pokeemerald_binds::WildPokemon;
 use rom::get_encounter_area_name;
 use rom::get_fishing_encounters;
@@ -70,6 +73,12 @@ struct RomInfo<'a> {
 impl<'a> RomInfo<'a> {
     fn species(&self, index: u16) -> &SpeciesInfo {
         &self.rom.species[index as usize]
+    }
+    fn item(&self, index: u16) -> &Item {
+        &self.rom.items[index as usize]
+    }
+    fn r#move(&self, index: u16) -> &MoveInfo {
+        &self.rom.moves[index as usize]
     }
 }
 
@@ -260,28 +269,73 @@ fn poke_is_valid(index: u16, info: RomInfo) -> bool {
 
 fn build_evos(species: &SpeciesInfo, info: RomInfo) -> Result<Option<Vec<PokemonEvolution>>> {
     fn build_evo(evolution: &Evolution, info: RomInfo) -> Result<PokemonEvolution> {
-        let method = EvoType::from_int(evolution.method as u32).unwrap_or(EvoType::EVO_NONE);
+        use EvoType as E;
+
+        let method = E::from_int(evolution.method as u32).unwrap_or(E::EVO_NONE);
         let target_index = evolution.targetSpecies;
+        let item_name = || info.item(evolution.param).name.to_string_c();
+        let move_name = || info.r#move(evolution.param).name.to_string_c();
         Ok(PokemonEvolution {
             target: get_full_species_name(target_index).context("getting species name")?,
-            level: match method {
-                m if m.to_name().starts_with("Level") => Some(evolution.param as u32),
-                _ => None,
-            },
-            item: match method {
-                m if m.to_name().starts_with("Item") => Some(
-                    info.rom.items[evolution.param as usize]
-                        .name
-                        .to_string_c()?,
+            level: None,
+            item: None,
+            condition: Some(match method {
+                E::EVO_LEVEL => format!("Level {}", evolution.param),
+                E::EVO_LEVEL_ATK_EQ_DEF => {
+                    format!("Level {} when attack equals defense", evolution.param)
+                }
+                E::EVO_LEVEL_ATK_GT_DEF => format!(
+                    "Level {} when attack is greater than defense",
+                    evolution.param
                 ),
-                _ => None,
-            },
-            condition: match method {
-                EvoType::EVO_FRIENDSHIP => Some("Friendship"),
-                EvoType::EVO_ITEM_DAY => Some("Used during the day"),
-                _ => None,
-            }
-            .map(str::to_string),
+                E::EVO_LEVEL_ATK_LT_DEF => format!(
+                    "Level {} when defense is greater than attack",
+                    evolution.param
+                ),
+                E::EVO_LEVEL_DAY => format!("Level {} during the day", evolution.param),
+                E::EVO_LEVEL_NIGHT => format!("Level {} during the night", evolution.param),
+                E::EVO_LEVEL_DUSK => format!("Level {} during dusk", evolution.param),
+                E::EVO_LEVEL_MALE => format!("Level {} while male", evolution.param),
+                E::EVO_LEVEL_FEMALE => format!("Level {} while female", evolution.param),
+
+                E::EVO_TRADE => "Trade".to_string(),
+                E::EVO_TRADE_ITEM => format!("Trade while holding {}", item_name()?),
+                E::EVO_BEAUTY => "Beauty".to_string(),
+
+                E::EVO_FRIENDSHIP => "Friendship".to_string(),
+                E::EVO_FRIENDSHIP_DAY => "Friendship during the day".to_string(),
+                E::EVO_FRIENDSHIP_NIGHT => "Friendship during the night".to_string(),
+
+                E::EVO_ITEM => format!("Use {}", item_name()?),
+                E::EVO_ITEM_DAY => format!("Use {} during the day", item_name()?),
+                E::EVO_ITEM_NIGHT => format!("Use {} during the night", item_name()?),
+                E::EVO_ITEM_HOLD => format!("Level-up while holding {}", item_name()?),
+                E::EVO_ITEM_HOLD_DAY => {
+                    format!("Level-up while holding {} during the day", item_name()?)
+                }
+                E::EVO_ITEM_HOLD_NIGHT => {
+                    format!("Level-up while holding {} during the night", item_name()?)
+                }
+                E::EVO_ITEM_MALE => format!("Use {} while male", item_name()?),
+                E::EVO_ITEM_FEMALE => format!("Use {} while female", item_name()?),
+
+                E::EVO_CRITICAL_HITS => {
+                    format!("Land {} critical hits in 1 battle", evolution.param)
+                }
+
+                evo if evo.c_name().starts_with("EVO_MOVE") => {
+                    format!("Level after learning {}", move_name()?)
+                }
+                evo if evo.c_name().starts_with("EVO_LEVEL") => {
+                    format!("Level {} with special conditions", evolution.param)
+                }
+
+                _ => format!(
+                    "Other:{{type:{} param:{}}}",
+                    method.to_name(),
+                    evolution.param
+                ),
+            }),
         })
     }
 
@@ -296,6 +350,16 @@ fn build_evos(species: &SpeciesInfo, info: RomInfo) -> Result<Option<Vec<Pokemon
             .map(|evo| build_evo(evo, info))
             .collect::<Result<_>>()?,
     ))
+}
+
+fn build_egg_groups(species: &SpeciesInfo) -> Result<Vec<String>> {
+    let mut vec = species
+        .eggGroups
+        .into_iter()
+        .map(|e| Ok(EggGroup::from_int(e as u32).context("egg group")?.to_name()))
+        .collect::<Result<Vec<_>>>()?;
+    vec.dedup();
+    Ok(vec)
 }
 
 fn get_forme_name(index: u16, info: RomInfo) -> Result<Option<String>> {
@@ -376,7 +440,7 @@ fn build_poke(index: u16, info: RomInfo, available_pokes: &HashSet<u16>) -> Resu
         abilities: build_poke_abilities(species, info.rom.abilities)?,
         weightkg: species.weight as f32 / 10.0,
         evos: build_evos(species, info)?,
-        eggGroups: vec![],
+        eggGroups: build_egg_groups(species)?,
 
         forme: get_forme_name(index, info)?,
         baseSpecies: get_base_name(index, info)?,
@@ -473,7 +537,6 @@ fn build_learnset(species_index: u16, info: RomInfo) -> Result<Learnset> {
         })
         .collect::<Result<Vec<_>>>()?;
 
-
     let mut moves = Vec::new();
     moves.extend(level_up_moves);
     moves.extend(tm_moves);
@@ -543,6 +606,11 @@ fn main() -> Result<()> {
         .map(|(ability, index)| {
             let ability = build_ability(index, ability)?;
             Ok((idify(&ability.name), ability))
+        })
+        .filter(|r| {
+            r.as_ref()
+                .map(|(index, _)| !index.is_empty())
+                .unwrap_or(true)
         })
         .collect::<Result<_>>()?;
 

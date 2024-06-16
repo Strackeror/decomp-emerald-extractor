@@ -4,6 +4,7 @@ use anyhow::Result;
 use convert_case::Case;
 use convert_case::Casing;
 use pokeemerald_binds::gTmList;
+use pokeemerald_binds::EggGroup;
 use pokeemerald_binds::FormChangeType;
 use pokeemerald_binds::Item;
 use pokeemerald_binds::WildPokemon;
@@ -42,6 +43,9 @@ impl ToName for Species {
 }
 impl ToName for EvoType {
     const PREFIX: &'static str = "EVO";
+}
+impl ToName for EggGroup {
+    const PREFIX: &'static str = "EGG_GROUP";
 }
 
 pub fn get_full_species_name(index: u16) -> Option<String> {

@@ -1,6 +1,8 @@
 use std::env;
 use std::path::PathBuf;
 
+type ConstantEntry = (&'static str, &'static str, &'static [(bool, &'static str)]);
+
 fn main() {
     let source_path = PathBuf::from("source");
     let stubs_path = PathBuf::from("stubs");
@@ -27,7 +29,7 @@ fn main() {
 
     let constants_path = source_path.join("constants");
     let output_path = PathBuf::from("src/_constants.rs");
-    let define_lists: &[(&str, &str, &[(bool, &str)])] = &[
+    let define_lists: &[ConstantEntry] = &[
         ("MapGroup", "map_groups.h", &[]),
         ("Type", "pokemon.h", &[(true, "TYPE_[A-Z_]+")]),
         (
@@ -57,6 +59,7 @@ fn main() {
             "form_change_types.h",
             &[(true, "FORM.*"), (true, ".*TERMINATOR")],
         ),
+        ("EggGroup", "pokemon.h", &[(true, "EGG_GROUP_.*")]),
     ];
 
     let mut constants_content = String::new();
