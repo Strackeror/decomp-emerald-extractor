@@ -50,6 +50,7 @@ union AnimCmd sAnim_GeneralFrame0[] = {};
 #include "data/abilities.h"
 #include "data/moves_info.h"
 #include "data/pokemon/species_info.h"
+#include "data/pokemon/egg_moves.h"
 
 // ///
 // /// Items

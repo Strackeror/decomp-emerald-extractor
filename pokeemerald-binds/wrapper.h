@@ -404,3 +404,4 @@ const struct Ability gAbilitiesInfo[];
 const struct Item gItemsInfo[];
 const struct WildPokemonHeader gWildMonHeaders[];
 const u16 gTmList[];
+const u16 gEggMoves[];

@@ -28,6 +28,7 @@ use rom::get_full_species_name;
 use rom::get_info;
 use rom::get_land_encounters;
 use rom::get_rock_encounters;
+use rom::get_species_egg_moves;
 use rom::get_species_evos;
 use rom::get_species_formes;
 use rom::get_species_formes_transitions;
@@ -522,7 +523,7 @@ fn build_learnset(species_index: u16, info: RomInfo) -> Result<Learnset> {
             Ok(LearnsetEntry {
                 how: json::Method::tm,
                 level: None,
-                move_: idify(&info.rom.moves[*id as usize].name.to_string_c()?),
+                move_: idify(&info.r#move(*id).name.to_string_c()?),
             })
         })
         .collect::<Result<Vec<_>>>()?;
@@ -532,7 +533,18 @@ fn build_learnset(species_index: u16, info: RomInfo) -> Result<Learnset> {
             Ok(LearnsetEntry {
                 how: json::Method::tutor,
                 level: None,
-                move_: idify(&info.rom.moves[*id as usize].name.to_string_c()?),
+                move_: idify(&info.r#move(*id).name.to_string_c()?),
+            })
+        })
+        .collect::<Result<Vec<_>>>()?;
+    let egg_moves = get_species_egg_moves(species_index, info.rom.egg_moves)
+        .unwrap_or(&[])
+        .iter()
+        .map(|id| {
+            Ok(LearnsetEntry {
+                how: json::Method::egg,
+                level: None,
+                move_: idify(&info.r#move(*id).name.to_string_c()?),
             })
         })
         .collect::<Result<Vec<_>>>()?;
@@ -541,6 +553,7 @@ fn build_learnset(species_index: u16, info: RomInfo) -> Result<Learnset> {
     moves.extend(level_up_moves);
     moves.extend(tm_moves);
     moves.extend(tutor_moves);
+    moves.extend(egg_moves);
     Ok(Learnset(moves))
 }
 

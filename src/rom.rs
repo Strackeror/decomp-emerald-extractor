@@ -128,8 +128,10 @@ pub fn get_species_teachable_moves(species: &SpeciesInfo) -> Option<&[u16]> {
     })
 }
 
-pub fn _get_species_egg_moves(_species: &SpeciesInfo) -> Option<&[u16]> {
-    todo!()
+pub fn get_species_egg_moves(index: u16, egg_moves: &[u16]) -> Option<&[u16]> {
+    let pos = egg_moves.iter().position(|i| index + 20000 == *i)?;
+    let count = egg_moves[pos..].iter().skip(1).take_while(|i| **i < 20000).count();
+    Some(&egg_moves[(pos + 1)..(pos + count)])
 }
 
 unsafe fn get_encounters<'a>(
@@ -178,7 +180,7 @@ pub fn get_types(species: &SpeciesInfo) -> Result<Vec<String>> {
 }
 
 pub fn get_tm_hm_list() -> &'static [u16] {
-    unsafe { guarded_array_to_slice(gTmList.as_ptr(), |i|(*i == 0xffff)) }
+    unsafe { guarded_array_to_slice(gTmList.as_ptr(), |i| (*i == 0xffff)) }
 }
 
 fn get_species_info() -> &'static [SpeciesInfo] {
@@ -219,6 +221,11 @@ fn get_encounter_info() -> &'static [WildPokemonHeader] {
     unsafe { guarded_array_to_slice(gWildMonHeaders.as_ptr(), |h| (*h).mapGroup == 0xff) }
 }
 
+fn get_egg_moves_list() -> &'static [u16] {
+    use pokeemerald_binds::gEggMoves;
+    unsafe { guarded_array_to_slice(gEggMoves.as_ptr(), |i| *i == 0xffff) }
+}
+
 pub fn get_encounter_area_name(group: u8, num: u8) -> Option<String> {
     let index = ((group as u32) << 8) + (num as u32);
     MapGroup::from_int(index).map(|m| m.to_name())
@@ -231,6 +238,7 @@ pub struct RomInfo {
     pub moves: &'static [MoveInfo],
     pub species: &'static [SpeciesInfo],
     pub encounters: &'static [WildPokemonHeader],
+    pub egg_moves: &'static [u16],
 }
 
 pub fn get_info() -> RomInfo {
@@ -240,5 +248,6 @@ pub fn get_info() -> RomInfo {
         moves: get_moves_info(),
         species: get_species_info(),
         encounters: get_encounter_info(),
+        egg_moves: get_egg_moves_list(),
     }
 }

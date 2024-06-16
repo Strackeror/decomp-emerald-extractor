@@ -14,7 +14,6 @@ fn main() {
         .warnings(false)
         .flag("-Wno-everything")
         .compile("pokeemerald");
-    println!("cargo::rerun-if-changed=wrapper.c");
     let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
     let bindings = bindgen::Builder::default()
         .clang_args(&[
@@ -83,4 +82,7 @@ fn main() {
     std::fs::write(output_path, constants_content).unwrap();
 
     bindings.write_to_file(out_dir.join("bindings.rs")).unwrap();
+    
+    println!("cargo::rerun-if-changed=wrapper.c");
+    println!("cargo::rerun-if-changed=wrapper.h");
 }
